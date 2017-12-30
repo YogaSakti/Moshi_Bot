@@ -58,7 +58,7 @@ class LineAPI {
     
     //options.headers['X-Line-Application'] = 'CHROMEOS\x092.0.0\x09Chrome_OS\x091';
     //options.headers['X-Line-Application'] = 'DESKTOPMAC 10.10.2-YOSEMITE-x64    MAC 4.5.0';
-    options.headers['X-Line-Application'] = 'IOSIPAD\t7.18.0\tiPhone OS\t11.12.1';
+    options.headers['X-Line-Application'] = 'IOSIPAD 7.18.0    iPhone OS 11.12.1';
     this.options = options;
     this.connection =
       thrift.createHttpConnection(this.config.LINE_DOMAIN, 443, this.options);
