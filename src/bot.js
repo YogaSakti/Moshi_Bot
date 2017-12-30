@@ -7,10 +7,10 @@ const LINE = require('./main.js');
 | Change it to your authToken / your email & password
 */
 const auth = {
-	authToken: 'EoUtjrObWgRgdLWDnsJc.FPRJAoTY9OwIvv8wHqyyZa.tyloxv3gqtRSexUf//ObBwOrEUi+Uf9NZW2zhewuN/Q=',
-	certificate: 'fcd1eb003833027c7e33cab30f45319c14783c785ce4ed4635b6f3d800fb4430',
-	email: 'si.andi.kiks@gmail.com',
-	password: 'ASDer123'
+	authToken: '',
+	certificate: '',
+	email: '',
+	password: ''
 }
 
 let client =  new LineConnect();
