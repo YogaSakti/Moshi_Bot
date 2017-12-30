@@ -57,11 +57,11 @@ class LineAPI {
   }) {
     
     //options.headers['X-Line-Application'] = 'CHROMEOS\x092.0.0\x09Chrome_OS\x091';
-    //options.headers['X-Line-Application'] = 'DESKTOPMAC 10.10.2-YOSEMITE-x64    MAC 4.5.0';
-    options.headers['X-Line-Application'] = 'IOSIPAD 7.18.0    iPhone OS 11.12.1';
+    options.headers['X-Line-Application'] = 'DESKTOPMAC 10.10.2-YOSEMITE-x64    MAC 4.5.0';
+    //options.headers['X-Line-Application'] = 'IOSIPAD 7.18.0    iPhone OS 11.12.1';
     this.options = options;
     this.connection =
-      thrift.createHttpConnection(this.config.LINE_DOMAIN, 443, this.options);
+      thrift.createHttpConnection(this.config.LINE_DOMAIN_3RD, 443, this.options);
     this.connection.on('error', (err) => {
       console.log('err',err);
       return err;
@@ -245,6 +245,8 @@ class LineAPI {
     return await this._client.getGroupIdsInvited()
   }
 
+  
+
   async _acceptGroupInvitation(groupid) {
     this._client.acceptGroupInvitation(0,groupid);
     await this._getGroupsInvited();
@@ -338,40 +340,7 @@ class LineAPI {
     return hours+':'+minutes+':'+seconds;
   }
   
-  async _textToSpeech(words,lang,callback){
-	  let namef = __dirname+this.config.FILE_DOWNLOAD_LOCATION+"/tts.mp3";
-	  const xoptions = {
-          url: `https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(words)}&tl=${lang}&client=tw-ob&ttsspeed=0.24`,
-          headers: {
-              'Referer': 'http://translate.google.com/',
-              'User-Agent': 'stagefright/1.2 (Linux;Android 5.0)'
-          }
-      }
-	  rp(xoptions).pipe(fs.createWriteStream(namef)).on('close', ()=>{callback(namef);})
-  }
   
-  async _youSound(urls,callback){
-	  let xurl = urls.replace(/\\/g , "");
-	  let video_id = xurl.split('v=')[1];
-	  let ampersandPosition = video_id.indexOf('&');
-      if(ampersandPosition != -1) {
-          video_id = video_id.substring(0, ampersandPosition);
-      }
-	  const xoptions = {
-          url: "http://www.yt-mp3.com/fetch?v="+video_id+"&referrer=http%3A%2F%2Fwww.yt-mp3.com%2F&apikey=yt-mp3.com",
-          headers: {
-              'Referer': 'http://www.yt-mp3.com',
-              'User-Agent': 'stagefright/1.2 (Linux;Android 5.0)',
-          },
-		  json: true
-      }
-	  rp(xoptions).then(function (parsedBody) {
-        callback(parsedBody);
-      })
-    .catch(function (err) {
-        console.info(err);
-      });
-  }
   
   async _sendFile(message,filepaths, typeContent = 1) {
     let filename = 'media';
@@ -432,7 +401,7 @@ class LineAPI {
     this._sendFile(to,filepaths,1);
   }
   
-  async _getAlbum(gid,ctoken){
+  /*async _getAlbum(gid,ctoken){
 	let bot = await this._client.getProfile();
 	let optionx = {
         uri: this.gdLine+'/mh/album/v3/albums?sourceType=GROUPHOME&homeId='+gid,
@@ -453,7 +422,7 @@ class LineAPI {
     ));
   }
   
-  /*async _insertAlbum(gid,albumId,ctoken,img){
+  async _insertAlbum(gid,albumId,ctoken,img){
 	let bot = await this._client.getProfile();
 	let M = new Message();
     M.to = gid;
@@ -476,7 +445,7 @@ class LineAPI {
         };
         return this.postAlbum("http://obs-jp.line-apps.com/talk/m/object_info.nhn",bot.mid,albumId,ctoken, data, filepath).then((res) => (res.error ? console.log('err',res.error) : console.log('done')));
     });
-  }*/
+  }
   
   async _createAlbum(gid,name,ctoken){
 	let bot = await this._client.getProfile();
@@ -637,7 +606,7 @@ class LineAPI {
           res.error ? reject(res.error) : resolve(res.body)
         ))
     ));
-  }
+  }*/
   
   _isoToDate(param,callback){
 	  let xdate = new Date(param);
@@ -700,22 +669,7 @@ class LineAPI {
     }).pipe(fs.createWriteStream(`${dir}/${name}.${formatType}`)).on('finish', function () { callback(dir+name+"."+formatType); });;
 	//callback(dir+name+"."+formatType);
   }
-  
-  async _animePost(data,callback){
-    rp(data).then(function (repos) {callback(JSON.parse(repos));}).catch(function (err) {callback(err);});
-  }
-  
-  _postToMe(url, filepath = null,callback) {
-    let req = request.post("http://aksamedia.com/googlex/x-up.php", function (err, resp, body) {
-      if (err) {
-        callback('Error!');
-      } else {
-        callback(body);
-      }
-    });
-    let form = req.form();
-    form.append('file', fs.createReadStream(filepath));
-  }
+
 
   postContent(url, data = null, filepath = null) {
     return new Promise((resolve, reject) => (
