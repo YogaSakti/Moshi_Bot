@@ -148,13 +148,9 @@ Bot left	=> bot leave\n";
 		    let babay = new Message();
 			babay.to = operation.param1;
 			babay.toType = 2;
-			babay.text = "Goodbye...";
-			this._invite(operation.param1,[operation.param2]);
+			babay.text = "Goodbye 😢";
+			//this._invite(operation.param1,[operation.param2]);
 			this._client.sendMessage(0, babay);
-		}else if(operation.type == 15 && !isAdminOrBot(operation.param2)){
-			let seq = new Message();
-			seq.to = operation.param1;
-			this.textMessage("0102",seq,operation.param2,1);
 		}
 		
 		if(operation.type == 5 && this.stateStatus.salam == 1) {//someone adding me..
