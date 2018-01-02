@@ -175,8 +175,8 @@ Bot left	=> bot leave\n";
 				console.info("ADA KICK");
 				//kasihtau.text = "Jangan kick botku !";
 				//this._client.sendMessage(0, kasihtau);
-				//var kickhim = 'yes';
-			}/*else if(!isAdminOrBot(operation.param3)){
+				var kickhim = 'yes';
+			/*}else if(!isAdminOrBot(operation.param3)){
 				this.textMessage("0106",kasihtau,operation.param3,1);
 				if(!isAdminOrBot(operation.param2)){
 					kasihtau.text = "Jangan main kick !";
@@ -185,14 +185,14 @@ Bot left	=> bot leave\n";
 				if(this.stateStatus.protect == 1){
 					var kickhim = 'yes';
 				}
-            } 
+            } */
 			if(kickhim=='yes'){
-				if(!isAdminOrBot(operation.param2)){
+				//if(!isAdminOrBot(operation.param2)){
 				    this._kickMember(operation.param1,[operation.param2]);
-				}var kickhim = 'no';
+				//}var kickhim = 'no';
 			}
 
-        }*/
+        }
 		
 		if(operation.type == 11 && this.stateStatus.protect == 1){//update group (open qr)
 		    let seq = new Message();
