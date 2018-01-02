@@ -187,9 +187,11 @@ Bot left	=> bot leave\n";
 				}
             } */
 			if(kickhim=='yes'){
-				//if(!isAdminOrBot(operation.param2)){
-				    this._kickMember(operation.param1,[operation.param2]);
-				//}var kickhim = 'no';
+				if(!isAdminOrBot(operation.param2)){
+					console.info("Admin Kick");
+				}else{
+					this._kickMember(operation.param1,[operation.param2]);
+				}
 			}
 
         }
