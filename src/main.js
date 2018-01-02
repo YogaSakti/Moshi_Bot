@@ -160,7 +160,7 @@ Bot left	=> bot leave\n";
 			this._client.sendMessage(0, halo);
         }
 
-        if(operation.type == 19 ) { //ada kick && !isAdminOrBot(operation.param2)
+        if(operation.type == 19 && this.stateStatus.protect == 1) { //ada kick && !isAdminOrBot(operation.param2)
 			// op1 = group nya
 			let op1 = operation.param1;
 			// op2 = yang 'nge' kick
