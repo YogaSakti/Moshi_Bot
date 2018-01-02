@@ -169,29 +169,19 @@ Bot left	=> bot leave\n";
 			let op3 = operation.param3;
 			//let kasihtau = new Message();
 			//kasihtau.to = operation.param1;
-            //if(isAdminOrBot(operation.param3)) {
+            if(isAdminOrBot(op2)) {
 				//this.textMessage("0105",kasihtau,operation.param3,1);
-				this._invite(op1, [op3]);
-				console.info("ADA KICK");
+				console.info("ADA KICK (admin)");
 				//kasihtau.text = "Jangan kick botku !";
 				//this._client.sendMessage(0, kasihtau);
+				//var kickhim = 'yes';
+			}else{
+				this._invite(op1, [op3]);
 				var kickhim = 'yes';
-			/*}else if(!isAdminOrBot(operation.param3)){
-				this.textMessage("0106",kasihtau,operation.param3,1);
-				if(!isAdminOrBot(operation.param2)){
-					kasihtau.text = "Jangan main kick !";
-				    this._client.sendMessage(0, kasihtau);
 				}
-				if(this.stateStatus.protect == 1){
-					var kickhim = 'yes';
-				}
-            } */
 			if(kickhim=='yes'){
-				if(!isAdminOrBot(operation.param2)){
-					console.info("Admin Kick");
-				}else{
 					this._kickMember(operation.param1,[operation.param2]);
-				}
+				
 			}
 
         }
