@@ -9,7 +9,7 @@ const config = require('./config');
 const { Message, OpType, Location } = require('../curve-thrift/line_types');
 //let exec = require('child_process').exec;
 
-const myBot = ['u05ca28fb987817ad9fb186583ff2634b','u602da153a8b0095217d2fcd9c89a1a92','u32830ece1a56f2a5a1943bc4e58e116f'];
+const myBot = ['u05ca28fb987817ad9fb186583ff2634b','u602da153a8b0095217d2fcd9c89a1a92'];//'u32830ece1a56f2a5a1943bc4e58e116f'
 const banList = [];//Banned list
 var groupList = new Array();//Group list
 var vx = {};var midnornama,pesane,kickhim;
@@ -1045,12 +1045,12 @@ Bot left	=> bot leave\n";
 		}
 		
         const action = ['autojoin on','autojoin off','cancel on','cancel off','kick on','kick off','salam on','salam off','protect off','protect on','qr on','qr off']
-        if(action.includes(txt)) {
+        if(action.includes(txt) && isAdminOrBot(seq.from_)) {
             this.setState(seq,0)
         }
 	
         if(txt == '.myid' || txt == 'myid' || txt == 'Myid') {
-            this._sendMessage(seq,"ID Kamu: "+seq.from_);
+            this._sendMessage(seq,"ID: "+seq.from_);
         }
 			
 		if(txt == ".time" || txt == 'Time' || txt == 'time'){
