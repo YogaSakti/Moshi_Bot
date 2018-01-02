@@ -12,8 +12,8 @@ const { Message, OpType, Location } = require('../curve-thrift/line_types');
 const myBot = ['u05ca28fb987817ad9fb186583ff2634b','u602da153a8b0095217d2fcd9c89a1a92','u32830ece1a56f2a5a1943bc4e58e116f'];
 const banList = [];//Banned list
 var groupList = new Array();//Group list
-var vx = {};var midnornama,pesane,kickhim;var waitMsg = "no";//DO NOT CHANGE THIS
-const imgArr = ['png','jpg','jpeg','gif','bmp','webp'];//DO NOT CHANGE THIS
+var vx = {};var midnornama,pesane,kickhim;
+var waitMsg = "no";//DO NOT CHANGE THIS
 var bcText = "Masukan teks untuk broadcast";
 
 function isAdminOrBot(param) {
@@ -28,15 +28,6 @@ function firstToUpperCase(str) {
     return str.substr(0, 1).toUpperCase() + str.substr(1);
 }
 
-function isTGet(string,param){
-	return string.includes(param);
-}
-
-function isImg(param) {
-    return imgArr.includes(param);
-}
-
-
 
 class LINE extends LineAPI {
     constructor() {
@@ -46,31 +37,33 @@ class LINE extends LineAPI {
         this.stateStatus = {
 			autojoin: 1, //0 = No, 1 = Yes
             cancel: 0, //0 = Auto cancel off, 1 = on
-            kick: 1, //1 = Yes, 0 = No
+            kick: 0, //1 = Yes, 0 = No
 			mute: 0, //1 = Mute, 0 = Unmute
-			//protect: 1, //Protect Qr,Kicker
+			protect: 1, //Protect Qr,Kicker
 			qr: 0, //0 = Gk boleh, 1 = Boleh
 			salam: 1 //1 = Yes, 0 = No
         }
 		this.keyhelp = "\n\
-========Keyword=======\n\
-.key / .help=> List command\n\
-.botinfo	=> contact bot\n\
-.myid		=> your id\n\
-.ginfo		=> info grup\n\
-.gurl		=> open url\n\
-.curl		=> close url\n\
-.kickme		=> kick you\n\
-.tagall		=> tag all grup member\n\
-.sider		=> menu sider\n\
-.time		=> time\n\
-.speed		=> cek bot speed\n\
-.status		=> view bot status\n\
-.botleft	=> bot leave\n\
-.mute		=> mute bot\n\
-.unmute		=> unmute bot\n\
+[Keyword Bot]\n\
+key / Help=> List command\n\
+Myid		=> your id\n\
+Ginfo		=> info grup\n\
+Ourl		=> open grup url\n\
+Curl		=> close grup url\n\
+Tag all		=> tag all grup member\n\
+Sider		=> menu sider\n\
+Time		=> time\n\
+Speed		=> cek bot speed\n\
+Bot info	=> contact bot\n\
+Bot stat	=> view bot status\n\
+Bot left	=> bot leave\n";
+        var that = this;
+	}
+/*
 ====================\n\n\
 ========Admin========\n\
+!mute\n\
+!unmute\n\
 !grouputil\n\
 !broadcast\n\
 !refresh\n\
@@ -79,10 +72,7 @@ class LINE extends LineAPI {
 !unban\n\
 !kickban\n\
 !kickall\n\
-====================\n";
-        var that = this;
-	}
-/*
+
 .msg  => Pc ke orang\n\
 .tts => convert text to speech\n\
 => !kepo\n\
@@ -121,7 +111,7 @@ class LINE extends LineAPI {
             if(waitMsg == "yes" && operation.message.from_ == vx[0] && this.stateStatus.mute != 1){
 				this.textMessage(txt,message,message.text)
 			}else if(this.stateStatus.mute != 1){this.textMessage(txt,message);
-			}else if(txt == ".unmute"  && this.stateStatus.mute == 1){ //&& isAdminOrBot(operation.message.from_)
+			}else if(txt == "!unmute"  && this.stateStatus.mute == 1 && isAdminOrBot(operation.message.from_)){ 
 			    this.stateStatus.mute = 0;
 			    this._sendMessage(message,"ヽ(^。^)ノ")
 		    }else{console.info("muted");}
@@ -175,15 +165,18 @@ class LINE extends LineAPI {
         }
 
         if(operation.type == 19 ) { //ada kick && !isAdminOrBot(operation.param2)
-            // op1 = group nya
-            // op2 = yang 'nge' kick
-            // op3 = yang 'di' kick
+			// op1 = group nya
+			let op1 = operation.param1;
+			// op2 = yang 'nge' kick
+			let op2 = operation.param2;
+			// op3 = yang 'di' kick
+			let op3 = operation.param3;
 			//let kasihtau = new Message();
 			//kasihtau.to = operation.param1;
             //if(isAdminOrBot(operation.param3)) {
 				//this.textMessage("0105",kasihtau,operation.param3,1);
+				this._invite(op1, [op3]);
 				console.info("ADA KICK");
-                this._invite(operation.param1,operation.param3);
 				//kasihtau.text = "Jangan kick botku !";
 				//this._client.sendMessage(0, kasihtau);
 				//var kickhim = 'yes';
@@ -422,28 +415,6 @@ class LINE extends LineAPI {
 			this._client.sendMessage(0, seq);
 	}
 	
-	mension(listMember) {
-        let mentionStrings = [''];
-        let mid = [''];
-        mentionStrings.push('@'+listMember.displayName+'\n');
-        mid.push(listMember.mid);
-        let strings = mentionStrings.join('');
-        let member = strings.split('@').slice(1);
-        
-        let tmp = 0;
-        let memberStart = [];
-        let mentionMember = member.map((v,k) => {
-            let z = tmp += v.length + 1;
-            let end = z - 1;
-            memberStart.push(end);
-            let mentionz = `{"S":"${(isNaN(memberStart[k - 1] + 1) ? 0 : memberStart[k - 1] + 1 ) }","E":"${end}","M":"${mid[k + 1]}"}`;
-            return mentionz;
-        })
-        return {
-            names: mentionStrings.slice(1),
-            cmddata: { MENTION: `{"MENTIONEES":[${mentionMember}]}` }
-        }
-    }
 
     async recheck(cs,group) {
         let users;
@@ -734,8 +705,6 @@ class LINE extends LineAPI {
 			        banList.push(pment);
 					waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
 				}
-			}else{
-					//this._sendMessage(seq,"# How to !ban\nKirim kontaknya / mid / tag orangnya yang mau diban sama abang !");
 			}
 		}
 		if(txt == "!ban" && isAdminOrBot(seq.from_)){
@@ -749,43 +718,8 @@ class LINE extends LineAPI {
 				waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
 				this._sendMessage(seq,"Canceled");
 			}
-		}else if(txt == "!ban" && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted !");}
+		}else if(txt == "!ban" && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted!");}
 
-		/*if(vx[1] == "!sms" && seq.from_ == vx[0] && waitMsg == "yes"){
-			let panjang = txt.split("");
-			if(txt == "cancel"){
-				vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
-				this._sendMessage(seq,"#CANCELLED");
-			}else if(panjang.length >= 12 && vx[2] == "arg1"){
-				vx[4] = txt;
-				vx[2] = "arg2";
-				this._sendMessage(seq,"Ok apa pesan yang akan dikirim ?");
-			}else if(vx[2] == "arg2"){
-				this._xgetJson("http://dataninja.biz/","/dev/sms_api.php?kirimsms=kirim&nomor="+vx[4]+"&message="+textMessages,(result) => {
-					if(result.err===true){
-						this._sendMessage(seq,"Error:\n"+result.message);
-					}else{
-						this._sendMessage(seq,result.message);
-					}
-				});
-				vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";vx[4] = "";
-			}else{
-				this._sendMessage(seq,"# How to !sms\nKirim nomor orang yang dituju !");
-			}
-		}
-		if(txt == "!sms" && !isBanned(banList,seq.from_)){
-			if(vx[2] == null || typeof vx[2] === "undefined" || !vx[2]){
-			    waitMsg = "yes";
-			    vx[0] = seq.from_;vx[1] = txt;
-			    this._sendMessage(seq,"SMS ke siapa ?");
-				vx[2] = "arg1";
-				this._sendMessage(seq,"# Kirim nomor yang dituju");
-			}else{
-				waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
-				this._sendMessage(seq,"#CANCELLED");
-			}
-		}else if(txt == "!sms" && isBanned(banList,seq.from_)){this._sendMessage(seq,"Not permitted !");}
-		*/
 		if(vx[1] == "!unban" && seq.from_ == vx[0] && waitMsg == "yes"){
 			let panjang = txt.split("");
 			if(txt == "cancel"){
@@ -827,7 +761,7 @@ class LINE extends LineAPI {
 				waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
 				this._sendMessage(seq,"Canceled");
 			}
-		}else if(txt == "!unban" && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted !");}
+		}else if(txt == "!unban" && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted!");}
 		
 		if(txt == "!banlist"){
 			seq.text = "Banned List: \n";//[Mid] 
@@ -839,13 +773,13 @@ class LINE extends LineAPI {
 		}
 		
 
-		if(txt == ".botleft"){
+		if(txt == ".botleft" || txt == 'Bot left' || txt == 'bot left'){
 			this._client.leaveGroup(0,seq.to);
 		}/*else if(txt == "!botleft" ){
 			this._sendMessage(seq,"napa bro?");
 		}*/
 			
-		if(txt == ".mute" ){//&& isAdminOrBot(seq.from_)
+		if(txt == "!mute" && isAdminOrBot(seq.from_)){
 			this.stateStatus.mute = 1;
 			this._sendMessage(seq,"(*´﹃｀*)")
 		}
@@ -858,7 +792,7 @@ class LINE extends LineAPI {
 			let { mid, displayName } = await this._client.getProfile();
             this._sendMessage(seq, 'Halo juga '+displayName);
 		}
-		if(txt == 'moshi') {
+		if(txt == 'moshi' || txt == 'mos' || txt == 'Moshi') {
 			this._sendMessage(seq, reply_haihalo);
 		}
 		
@@ -963,7 +897,7 @@ class LINE extends LineAPI {
 			this._sendMessage(seq, "Done !");
 		}
 		
-        const sp = ['.speed','sp','speed','resp','respon'];
+        const sp = ['sp','Speed','resp','respon'];
         if(sp.includes(txt) && !isBanned(banList, seq.from_)) {
 			const curTime = (Date.now() / 1000);let M = new Message();M.to=seq.to;M.text = '';M.contentType = 1;M.contentPreview = null;M.contentMetadata = null;
 			await this._client.sendMessage(0,M);
@@ -987,16 +921,10 @@ class LINE extends LineAPI {
             }
         }else if(txt === '!kickall' && !isAdminOrBot(seq.from_) && seq.toType == 2){this._sendMessage(seq,"Not permitted !");}
 		
-		if(txt == '.key' || txt == '.help') {
+		if(txt == '.key' || txt == 'Help' || txt == 'help' || txt == 'key' || txt == 'Key' ) {
 			let botOwner = await this._client.getContacts([myBot[0]]);
             let { mid, displayName } = await this._client.getProfile();
-			let key2 = "\n\
-========Info========\n\
-| BotName		: "+displayName+"\n\
-| BotOwner	: Yogs\n\
-====================\n";
-//| BotStatus		: Working\n\
-			seq.text = key2 += this.keyhelp;
+			seq.text = this.keyhelp;
 			this._client.sendMessage(0, seq);
 		}
 		
@@ -1027,7 +955,7 @@ class LINE extends LineAPI {
             }
 		}
 		
-		if(txt == '.tagall' && seq.toType == 2) {
+		if(txt == '.tagall' || txt == 'Tag all' || txt == 'tag all' && seq.toType == 2) {
 			let { listMember } = await this.searchGroup(seq.to);
 			const mentions = await this.mention(listMember);
 			seq.contentMetadata = mentions.cmddata; 
@@ -1092,20 +1020,20 @@ class LINE extends LineAPI {
             await this._sendMessage(seq,mentions.names.join(''));
 		}
 
-        if(txt == '.sider') {
+        if(txt == 'Sider' || txt == 'sider' || txt == '.sider') {
             this._sendMessage(seq, `「  Sider  」\n.set				=> untuk set point\n.recheck	=> untuk check result\n.clear			=> remove result`)
         }
 		
-		if(txt == '.botinfo'){
+		if(txt == '.botinfo' || txt == 'Bot info' || txt == 'bot info'){
 			let probot = await this._client.getProfile();
 			let settings = await this._client.getSettings();
 			let emailbot = settings.identityIdentifier;
-			let M = new Message();M.to = seq.to;
-			M.text = 'Bot Name: '+probot.displayName+'\nBot CONTACT_TICKET: http://line.me/ti/p/'+settings.contactMyTicket+'\nBot Email: hidden for some reason ^_^';
+			let M = new Message();
+			M.to = seq.to;
+			M.text = 'Bot Name: '+probot.displayName+'\nBot Ticket: http://line.me/ti/p/'+settings.contactMyTicket+'\nBot Creator: Yogs\nANTI TEAM 😎';
 			this._client.sendMessage(0,M);
 			//Bot LINE_ID: line://ti/p/'+probot.userid+'\n
 		}
-		
 		
 		if(txt == "!kickban" && isAdminOrBot(seq.from_)){
 			for(var i = 0; i < banList.length; i++){
@@ -1116,7 +1044,7 @@ class LINE extends LineAPI {
 			}
 		}//else if(txt == "!kickban" && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted !");}
 		
-		if(txt == ".status"){
+		if(txt == ".status"|| txt == 'Bot stat' || txt == 'bot stat'){
 			this.setState(seq,1)
 		}
 		
@@ -1125,20 +1053,27 @@ class LINE extends LineAPI {
             this.setState(seq,0)
         }
 	
-        if(txt == '.myid' /*|| txt == 'mid' || txt == 'id'*/) {
+        if(txt == '.myid' || txt == 'myid' || txt == 'Myid') {
             this._sendMessage(seq,"ID Kamu: "+seq.from_);
         }
 			
-		if(txt == ".time" && !isBanned(banList,seq.from_)){
-			let d = new Date();let xmenit = d.getMinutes().toString().split("");
-			if(xmenit.length < 2){
-				this._sendMessage(seq, "Sekarang jam: "+d.getHours()+":0"+d.getMinutes());
-			}else{
-				this._sendMessage(seq, "Sekarang jam: "+d.getHours()+":"+d.getMinutes());
-			}
+		if(txt == ".time" || txt == 'Time' || txt == 'time'){
+			var moment = require('moment');
+			var time = moment();
+			var time_format = time.format('HH:mm:ss');
+			var date_format = time.format('YYYY-MM-DD');
+			
+			//console.log(time_format);
+			//let d = new Date();
+			//let xmenit = d.getMinutes().toString().split("");
+			//if(xmenit.length < 2){
+				this._sendMessage(seq, "Time Info: \nJam: "+time_format+"\nTanggal: "+date_format);
+			//}//else{
+			//	this._sendMessage(seq, "Sekarang jam: "+d.getHours()+":"+d.getMinutes());
+			//}
 		}
 		
-		if(txt == '.ginfo' && seq.toType == 2 && !isBanned(banList, seq.from_)) {
+		if(txt == '.ginfo' || txt == 'Ginfo' || txt == 'ginfo' && seq.toType == 2 && !isBanned(banList, seq.from_)) {
             let groupInfo = await this._client.getGroup(seq.to);let gqr = 'open';let ticketg = 'line://ti/g/';
 			let createdT64 = groupInfo.createdTime.toString().split(" ");
 			let createdTime = await this._getServerTime(createdT64[0]);
@@ -1175,8 +1110,8 @@ class LINE extends LineAPI {
 			this._sendMessage(seq,"Not permitted !");
 		}
 
-        const joinByUrl = ['.gurl','.curl'];
-        if(joinByUrl.includes(txt) && txt == ".gurl") {
+        const joinByUrl = ['.gurl','.curl','Gurl','Curl','Ourl'];
+        if(joinByUrl.includes(txt) && txt == ".gurl" || txt == "Gurl" || txt == "gurl"|| txt == "Ourl" || txt == "ourl") {
             this._sendMessage(seq,`Updating group ...`);
             let updateGroup = await this._getGroup(seq.to);//console.info(updateGroup);
             if(updateGroup.preventJoinByTicket === true) {
@@ -1185,7 +1120,7 @@ class LINE extends LineAPI {
             }
 			const groupUrl = await this._reissueGroupTicket(seq.to)
             this._sendMessage(seq,`Line group = line://ti/g/${groupUrl}`);
-        }else if(joinByUrl.includes(txt) && txt == ".curl") {
+        }else if(joinByUrl.includes(txt) && txt == ".curl" || txt == "curl" || txt == "Curl") {
             this._sendMessage(seq,`Updating group ...`);
             let updateGroup = await this._getGroup(seq.to);//console.info(updateGroup);
             if(updateGroup.preventJoinByTicket === false) {
@@ -1218,7 +1153,7 @@ class LINE extends LineAPI {
 			}else{this._client.inviteIntoGroup(0,seq.to,[param]);}
 		}
 		
-		if(gTicket[0] == "!join " && isAdminOrBot(seq.from_)){
+		if(gTicket[0] == "!join" && isAdminOrBot(seq.from_)){
 			let sudah = "no";
 			let grp = await this._client.findGroupByTicket(gTicket[1]);
 			let lGroup = await this._client.getGroupIdsJoined();
@@ -1228,7 +1163,9 @@ class LINE extends LineAPI {
 				}
 			}
 			if(sudah == "ya"){
-				let bang = new Message();bang.to = seq.to;bang.text = "Gagal join bang, eneng udah masuk groupnya";
+				let bang = new Message();
+				bang.to = seq.to;
+				bang.text = "Gagal join bang, eneng udah masuk groupnya";
 				this._client.sendMessage(0,bang);
 			}else if(sudah == "no"){
 				await this._acceptGroupInvitationByTicket(grp.id,gTicket[1]);
