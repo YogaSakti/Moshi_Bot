@@ -557,7 +557,7 @@ Bot left	=> bot leave";
 				this._sendMessage(seq,"#CANCELLED");
 			}
 		}else if(txt == '!addcontact' && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted !");}
-		
+	*/	
 		if(vx[1] == "!cekid" && seq.from_ == vx[0] && waitMsg == "yes"){
 			let panjang = txt.split("");
 			if(txt == "cancel"){
@@ -601,7 +601,7 @@ Bot left	=> bot leave";
 				this._sendMessage(seq,"#CANCELLED");
 			}
 		}else if(txt == '!cekid' && isBanned(banList, seq.from_)){this._sendMessage(seq,"Not permitted !");}
-		
+/*		
 		if(vx[1] == "!msg" && seq.from_ == vx[0] && waitMsg == "yes"){
 			//vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 			let panjang = txt.split("");
@@ -1025,6 +1025,7 @@ Bot left	=> bot leave";
 				}
 			}
 		}
+		
 		
 		if(txt == ".status"|| txt == 'Bot stat' || txt == 'bot stat'){
 			this.setState(seq,1)
