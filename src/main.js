@@ -187,18 +187,14 @@ Bot left	=> bot leave\n";
 
         }
 		
-		if(operation.type == 11 && this.stateStatus.protect == 1){//update group (open qr)
-		    let seq = new Message();
+		if(operation.type == 11 && this.stateStatus.qr == 0){
+			let seq = new Message();
 			seq.to = operation.param1;
 			this.textMessage("0103",seq,operation.param2,1);
 		}else if(operation.type == 11 && this.stateStatus.qr == 1){
 			let seq = new Message();
 			seq.to = operation.param1;
 			this.textMessage("0104",seq,operation.param2,1);
-		}else if(operation.type == 11 && this.stateStatus.qr == 0){
-			let seq = new Message();
-			seq.to = operation.param1;
-			this.textMessage("0103",seq,operation.param2,1);
 		}
 
         if(operation.type == 55){ //ada reader
