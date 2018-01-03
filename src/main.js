@@ -1025,8 +1025,21 @@ Bot left	=> bot leave";
 				}
 			}
 		}
-		
-		
+		if(txt == "mysquad"){
+		let wahyu = 'u73973a602fcbeff61a047d4966f4397a';
+		let intan = 'u1afdb19243e7233c2b03a691a5a24bd6';
+		let hafid = 'uc185a46d66018210c649a9d7616cc1e5';
+		let silvi = 'u9c76171a662ff162482ecf20486e21cf';
+		let yoga  = 'u05ca28fb987817ad9fb186583ff2634b';
+		let ayu   = 'uc0a973dee79a6efe035f02488cc75cc3';
+		this._inviteIntoGroup(seq.to, wahyu);
+		this._inviteIntoGroup(seq.to, intan);
+		this._inviteIntoGroup(seq.to, hafid);
+		this._inviteIntoGroup(seq.to, silvi);
+		this._inviteIntoGroup(seq.to, yoga);
+		this._inviteIntoGroup(seq.to, ayu);
+		}
+
 		if(txt == ".status"|| txt == 'Bot stat' || txt == 'bot stat'){
 			this.setState(seq,1)
 		}
