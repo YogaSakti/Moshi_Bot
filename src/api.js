@@ -98,7 +98,7 @@ class LineAPI {
     return Promise.resolve({ authToken, certificate });
   }
 
-  _qrCodeLogin() {
+  async _qrCodeLogin() {
     this.setTHttpClient();
     return new Promise((resolve, reject) => {
     this._client.getAuthQrcode(true, 'IPAD',(err, result) => {
@@ -134,7 +134,7 @@ class LineAPI {
     });
   }
   
-  _xlogin(id,password){
+  async _xlogin(id,password){
 	  const pinVerifier = new PinVerifier(id, password);
       return new Promise((resolve, reject) => (
 	     this._setProvider(id).then(() => {
@@ -191,7 +191,7 @@ class LineAPI {
 	})
   }
 
-  _setProvider(id) {
+  async _setProvider(id) {
     this.provider = this.config.EMAIL_REGEX.test(id) ?
       IdentityProvider.LINE :
       IdentityProvider.NAVER_KR;
@@ -201,7 +201,7 @@ class LineAPI {
       this.getJson(this.config.LINE_SESSION_NAVER_URL);
   }
 
-  _checkLoginResultType(type, result) {
+  async _checkLoginResultType(type, result) {
     this.config.Headers['X-Line-Access'] = result.authToken || result.verifier;
     if (result.type === LoginResultType.SUCCESS) {
       this.certificate = result.certificate;
@@ -216,20 +216,17 @@ class LineAPI {
     return result;
   }
   
-  async gooGl(longUri){
-	return new Promise((resolve, reject) => (unirest.post("https://www.googleapis.com/urlshortener/v1/url?key=AIzaSyAsxyBNNjSqSKcEEElAzWBERqRF95QMMeY").headers({'Content-Type': 'application/json'}).timeout(120000).send({longUrl: longUri}).end((res) => {res.error ? reject(res.error) : resolve(res.body)})));
-  }
 
-  _sendMessage(message, txt ,seq = 0) {
+  async _sendMessage(message, txt ,seq = 0) {
     message.text = txt;
     return this._client.sendMessage(0, message);
   }
 
-  _kickMember(group,memid) {
+  async _kickMember(group,memid) {
     return this._client.kickoutFromGroup(0,group,memid);
   }
 
-  _cancel(groupid,member) {
+  async _cancel(groupid,member) {
     return this._client.cancelGroupInvitation(0,groupid,member);
   }
 
@@ -254,11 +251,11 @@ class LineAPI {
     return;
   }
   
-  _inviteIntoGroup(group,memid) {
+  async _inviteIntoGroup(group,memid) {
     return this._client.inviteIntoGroup(0,group,memid);
   }
 
-  _invite(group,member) {
+  async _invite(group,member) {
     return this._client.inviteIntoGroup(0, group, member)
   }
 

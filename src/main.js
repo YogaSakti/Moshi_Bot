@@ -171,12 +171,13 @@ Bot left	=> bot leave\n";
 			//kasihtau.to = operation.param1;
             if(isAdminOrBot(op2)) {
 				//this.textMessage("0105",kasihtau,operation.param3,1);
-				console.info("ADA KICK (admin)");
+				console.info("KICK (admin)");
 				//kasihtau.text = "Jangan kick botku !";
 				//this._client.sendMessage(0, kasihtau);
 				//var kickhim = 'yes';
 			}else{
 				this._invite(op1, [op3]);
+				console.info("KICK (other)");
 				var kickhim = 'yes';
 				}
 			if(kickhim=='yes'){
@@ -333,7 +334,7 @@ Bot left	=> bot leave\n";
         }}
     }
 
-    mention(listMember) {
+    async mention(listMember) {
         let mentionStrings = [''];
 		let mid = [''];
         for (var i = 0; i < listMember.length; i++) {
@@ -418,7 +419,7 @@ Bot left	=> bot leave\n";
             });
     }
 	
-    removeReaderByGroup(groupID) {
+    async removeReaderByGroup(groupID) {
         const groupIndex = this.checkReader.findIndex(v => {
             if(v.group == groupID) {
                 return v
@@ -433,7 +434,6 @@ Bot left	=> bot leave\n";
 
     async textMessage(textMessages, seq, param, lockt) {
 		const [ cmd, payload ] = textMessages.split(' ');
-		//payload = payload.join(' ');
 		const gTicket = textMessages.split('line://ti/g/');
 		const linktxt = textMessages.split('http');
         const txt = textMessages.toLowerCase();
@@ -763,9 +763,7 @@ Bot left	=> bot leave\n";
 
 		if(txt == ".botleft" || txt == 'Bot left' || txt == 'bot left'){
 			this._client.leaveGroup(0,seq.to);
-		}/*else if(txt == "!botleft" ){
-			this._sendMessage(seq,"napa bro?");
-		}*/
+		}
 			
 		if(txt == "!mute" && isAdminOrBot(seq.from_)){
 			this.stateStatus.mute = 1;
@@ -851,7 +849,7 @@ Bot left	=> bot leave\n";
 			}
 		}else if(txt == "!grouputil" && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted !");}
 		
-		if(cox[0] == "!broadcast" && isAdminOrBot(seq.from_) && cox[1]){
+		if(cox[0] == "!bc" && isAdminOrBot(seq.from_) && cox[1]){
             let listMID = [];
             let bcText = textMessages.split(" ").slice(1).toString().replace(/,/g , " ");
             let bcm = new Message();
@@ -862,14 +860,21 @@ Bot left	=> bot leave\n";
 		        for(var xi = 0; xi <listMID[i].length; xi++){
 		        	bcm.to = listMID[i][xi];
                     let midc = listMID[i][xi].split("");
-                    if(midc[0] == "u"){bcm.toType = 0;}else if(midc[0] == "c"){bcm.toType = 2;}else if(midc[0] == "r"){bcm.toType = 1;}else{bcm.toType = 0;}
+                    if(midc[0] == "u"){
+						bcm.toType = 0;
+					}else if(midc[0] == "c"){
+						bcm.toType = 2;
+					}else if(midc[0] == "r"){
+						bcm.toType = 1;
+					}else{bcm.toType = 0;
+					}
                     bcm.text = bcText;
                     this._client.sendMessage(0, bcm);
 	        	}
             }
-		}else if(cox[0] == "!broadcast" && isAdminOrBot(seq.from_) && !cox[1]){
+		}else if(cox[0] == "!bc" && isAdminOrBot(seq.from_) && !cox[1]){
 			this._sendMessage(seq,"# How to broadcast:\nbroadcast yourtexthere");
-		}else if(cox[0] == "!broadcast" && !isAdminOrBot(seq.from_)){
+		}else if(cox[0] == "!bc" && !isAdminOrBot(seq.from_)){
 			this._sendMessage(seq,"Not permitted!");
 		}
 		
