@@ -29,15 +29,6 @@ function isImg(param) {
     return imgArr.includes(param);
 }
 
-function ambilKata(params, kata1, kata2){
-    if(params.indexOf(kata1) === false) return false;
-    if(params.indexOf(kata2) === false) return false;
-    let start = params.indexOf(kata1) + kata1.length;
-    let end = params.indexOf(kata2, start);
-    let returns = params.substr(start, end - start);
-    return returns;
-}
-
 class LineAPI {
   constructor() {
     this.config = config;

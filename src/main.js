@@ -1050,15 +1050,7 @@ Bot left	=> bot leave";
 			var time = moment();
 			var time_format = time.format('HH:mm:ss');
 			var date_format = time.format('YYYY-MM-DD');
-			
-			//console.log(time_format);
-			//let d = new Date();
-			//let xmenit = d.getMinutes().toString().split("");
-			//if(xmenit.length < 2){
-				this._sendMessage(seq, "Time Info: \nJam: "+time_format+"\nTanggal: "+date_format);
-			//}//else{
-			//	this._sendMessage(seq, "Sekarang jam: "+d.getHours()+":"+d.getMinutes());
-			//}
+			this._sendMessage(seq, "Time Info: \nJam: "+time_format+"\nTanggal: "+date_format);
 		}
 		
 		if(txt == '.ginfo' || txt == 'Ginfo' || txt == 'ginfo' && seq.toType == 2 && !isBanned(banList, seq.from_)) {
@@ -1073,7 +1065,7 @@ Bot left	=> bot leave";
 			let gcreator = groupInfo.creator.displayName;
 			let pendingCount = 0;
 			if(groupInfo.invitee !== null){
-				//console.info("pendingExist");
+				console.info("pendingExist");
 				pendingCount = groupInfo.invitee.length;
 			}
 			let gcover = groupInfo.pictureStatus;
@@ -1101,7 +1093,8 @@ Bot left	=> bot leave";
         const joinByUrl = ['.gurl','.curl','Gurl','Curl','Ourl'];
         if(joinByUrl.includes(txt) && txt == ".gurl" || txt == "Gurl" || txt == "gurl"|| txt == "Ourl" || txt == "ourl") {
             this._sendMessage(seq,`Updating group ...`);
-            let updateGroup = await this._getGroup(seq.to);//console.info(updateGroup);
+			let updateGroup = await this._getGroup(seq.to);
+			console.info(updateGroup);
             if(updateGroup.preventJoinByTicket === true) {
                 updateGroup.preventJoinByTicket = false;
 				await this._updateGroup(updateGroup);
@@ -1110,7 +1103,8 @@ Bot left	=> bot leave";
             this._sendMessage(seq,`Line group = line://ti/g/${groupUrl}`);
         }else if(joinByUrl.includes(txt) && txt == ".curl" || txt == "curl" || txt == "Curl") {
             this._sendMessage(seq,`Updating group ...`);
-            let updateGroup = await this._getGroup(seq.to);//console.info(updateGroup);
+			let updateGroup = await this._getGroup(seq.to);
+			console.info(updateGroup);
             if(updateGroup.preventJoinByTicket === false) {
                 updateGroup.preventJoinByTicket = true;
 				await this._updateGroup(updateGroup);
