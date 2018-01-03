@@ -94,9 +94,9 @@ Bot left	=> bot leave";
     getOprationType(operations) {
         for (let key in OpType) {
             if(operations.type == OpType[key]) {
-                //if(key !== 'NOTIFIED_UPDATE_PROFILE') {
+                if(key !== 'NOTIFIED_UPDATE_PROFILE') {
                     console.info(`[* ${operations.type} ] ${key} `);
-                //}
+                }
             }
         }
     }
@@ -138,9 +138,7 @@ Bot left	=> bot leave";
 		}else if(operation.type == 17 && this.stateStatus.salam == 1){//ada yang join
 			let seq = new Message();
 			seq.to = operation.param1;
-			//halo.siapa = operation.param2;
 			this.textMessage("0101",seq,operation.param2,1);
-			//this._client.sendMessage(0, halo);
 		}
 		
 		if(operation.type == 15) {//ada yang leave // && isAdminOrBot(operation.param2)
@@ -166,19 +164,18 @@ Bot left	=> bot leave";
 			let op2 = operation.param2;
 			// op3 = yang 'di' kick
 			let op3 = operation.param3;
-			//let kasihtau = new Message();
-			//kasihtau.to = operation.param1;
             if(isAdminOrBot(op2)) {
-				//this.textMessage("0105",kasihtau,operation.param3,1);
-				console.info("KICK (admin)");
-				//kasihtau.text = "Jangan kick botku !";
-				//this._client.sendMessage(0, kasihtau);
-				//var kickhim = 'yes';
+				console.info("KICK by admin");
 			}else{
 				this._invite(op1, [op3]);
 				console.info("KICK (other)");
 				var kickhim = 'yes';
-				}
+			}
+			if(isAdminOrBot(op3)){
+				this._invite(op1, [op3]);
+				console.info("admin/bot di kick");
+				var kickhim = 'yes';
+			}
 			if(kickhim=='yes'){
 					this._kickMember(operation.param1,[operation.param2]);
 				
@@ -375,9 +372,6 @@ Bot left	=> bot leave";
                         return mentionz;
                     })
 					mentionMemberx.push(mentionMember1);
-				    //const tag = {cmddata: { MENTION: `{"MENTIONEES":[${mentionMember}]}` }}
-				    //seq.contentMetadata = tag.cmddata;
-				    //this._client.sendMessage(0, seq);
 				}else{
 				    let namanya = listMember[i].dn;
 				    let midnya = listMember[i].mid;
@@ -875,10 +869,10 @@ Bot left	=> bot leave";
 			this._sendMessage(seq,"Not permitted!");
 		}
 		
-		if(txt == ".kickme" && seq.toType == 2 && !isBanned(banList, seq.from_) && this.stateStatus.kick == 1){
+		if(txt == ".kickme" && seq.toType == 2 && this.stateStatus.kick == 1){
 			this._sendMessage(seq,"Ok bang !");
 			this._kickMember(seq.to,[seq.from_]);
-		}else if(txt == '.kickme' && isBanned(banList, seq.from_)){this._sendMessage(seq,"Not permitted !");}
+		}
 		
 		
 		if(txt == "!refresh" && isAdminOrBot(seq.from_)){
@@ -1030,7 +1024,7 @@ Bot left	=> bot leave";
 					this._kickMember(seq.to,adaGk);
 				}
 			}
-		}//else if(txt == "!kickban" && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted !");}
+		}
 		
 		if(txt == ".status"|| txt == 'Bot stat' || txt == 'bot stat'){
 			this.setState(seq,1)
