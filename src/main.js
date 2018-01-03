@@ -39,13 +39,12 @@ class LINE extends LineAPI {
             cancel: 0, //0 = Auto cancel off, 1 = on
             kick: 0, //1 = Yes, 0 = No
 			mute: 0, //1 = Mute, 0 = Unmute
-			protect: 1, //Protect Qr,Kicker
+			protect: 1, //Protect Kicker
 			qr: 0, //0 = Gk boleh, 1 = Boleh
 			salam: 1 //1 = Yes, 0 = No
         }
-		this.keyhelp = "\n\
-[Keyword Bot]\n\
-key / Help=> List command\n\
+		this.keyhelp = "[Keyword Bot]\n\
+key / Help	=> List command\n\
 Myid		=> your id\n\
 Ginfo		=> info grup\n\
 Ourl		=> open grup url\n\
@@ -56,7 +55,7 @@ Time		=> time\n\
 Speed		=> cek bot speed\n\
 Bot info	=> contact bot\n\
 Bot stat	=> view bot status\n\
-Bot left	=> bot leave\n";
+Bot left	=> bot leave";
         var that = this;
 	}
 /*
@@ -187,6 +186,7 @@ Bot left	=> bot leave\n";
 
         }
 		
+		/*
 		if(operation.type == 11 && this.stateStatus.qr == 0){
 			let seq = new Message();
 			seq.to = operation.param1;
@@ -196,6 +196,7 @@ Bot left	=> bot leave\n";
 			seq.to = operation.param1;
 			this.textMessage("0104",seq,operation.param2,1);
 		}
+		*/
 
         if(operation.type == 55){ //ada reader
 
@@ -922,7 +923,7 @@ Bot left	=> bot leave\n";
             for (var i = 0; i < listMember.length; i++) {
                 if(listMember[i].mid==param){
 					let namanya = listMember[i].dn;
-					seq.text = 'Halo @'+namanya+', Selamat datang :D';
+					seq.text = 'Halo @'+namanya+', Selamat datang 😀';
 					let midnya = listMember[i].mid;
 					let kata = seq.text.split("@").slice(0,1);
 					let kata2 = kata[0].split("");
@@ -950,7 +951,7 @@ Bot left	=> bot leave\n";
 			seq.contentMetadata = mentions.cmddata; 
 			await this._sendMessage(seq,mentions.names.join(''))
 			}
-
+		/*
 		if(txt == '0103' && lockt == 1){
 			let ax = await this._client.getGroup(seq.to);
 			if(ax.preventJoinByTicket === true){}else{ax.preventJoinByTicket = true;await this._client.updateGroup(0, ax);}
@@ -986,6 +987,8 @@ Bot left	=> bot leave\n";
                 }
             }
         }
+		*/
+
 
         if(txt == '.set') {
             this._sendMessage(seq, `setpoint (｀・ω・´)`);
@@ -994,17 +997,13 @@ Bot left	=> bot leave\n";
 
         if(txt == '.clear') {
             this.checkReader = []
-            this._sendMessage(seq, `Remove all check reader on memory`);
+            this._sendMessage(seq, `Removed`);
         }  
 
         if(txt == '.recheck'){
 			let rec = await this.recheck(this.checkReader,seq.to);
 			seq.text='';
             const mentions = await this.mention(rec);
-            //for(var i = 0; i < mentions.length; i++){
-			//	seq.text += '\n=> '+mentions[i].displayName;
-			//}
-            //this._client.sendMessage(0,seq);  
 			seq.contentMetadata = mentions.cmddata;
             await this._sendMessage(seq,mentions.names.join(''));
 		}
