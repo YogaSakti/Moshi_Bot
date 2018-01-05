@@ -40,8 +40,9 @@ class LINE extends LineAPI {
             kick: 0, //1 = Yes, 0 = No
 			mute: 0, //1 = Mute, 0 = Unmute
 			protect: 1, //Protect Kicker
-			qr: 0, //0 = Gk boleh, 1 = Boleh
-			salam: 1 //1 = Yes, 0 = No
+			//qr: 0, //0 = Gk boleh, 1 = Boleh
+			salam: 1, //1 = Yes, 0 = No
+			chat: 1 //1 = Yes, 0 = No
         }
 		this.keyhelp = "[Keyword Bot]\n\
 key / Help	=> List command\n\
@@ -270,17 +271,6 @@ Bot left	=> bot leave";
 		    }
         }
 	}
-	
-	async isItFriend(mid){
-		let listFriends = await this._getAllContactIds();let friend = "no";
-		for(var i = 0; i < listFriends.length; i++){
-			if(listFriends[i] == mid){
-				friend = "ya";break;
-			}
-		}
-		return friend;
-	}
-
 	
 	async searchRoom(rid) {
         let thisroom = await this._getRoom(rid);
@@ -575,12 +565,16 @@ Bot left	=> bot leave";
 				seq.text = seq.from_.toString();
 				this._client.sendMessage(0, seq);
 			}else if(cot[1]){
-				vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
+				vx[0] = "";
+				vx[1] = "";
+				waitMsg = "no";
+				vx[2] = "";
+				vx[3] = "";
 				let cekid = new Message();
 				cekid.to = seq.to;
 				let ment = seq.contentMetadata.MENTION;
-			    let xment = JSON.parse(ment);let pment = xment.MENTIONEES[0].M;
-				
+				let xment = JSON.parse(ment);
+				let pment = xment.MENTIONEES[0].M;
 				cekid.text = JSON.stringify(pment).replace(/"/g , "");
 				this._client.sendMessage(0, cekid);
 			}else{
@@ -601,7 +595,8 @@ Bot left	=> bot leave";
 				this._sendMessage(seq,"#CANCELLED");
 			}
 		}else if(txt == '!cekid' && isBanned(banList, seq.from_)){this._sendMessage(seq,"Not permitted !");}
-/*		
+	
+		/*		
 		if(vx[1] == "!msg" && seq.from_ == vx[0] && waitMsg == "yes"){
 			//vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
 			let panjang = txt.split("");
@@ -613,7 +608,8 @@ Bot left	=> bot leave";
 				bang.text = "OK !, btw pesan-nya apa ?"
 				this._client.sendMessage(0,bang);
 				let ment = seq.contentMetadata.MENTION;
-			    let xment = JSON.parse(ment);let pment = xment.MENTIONEES[0].M;
+				let xment = JSON.parse(ment);
+				let pment = xment.MENTIONEES[0].M;
 				let midnya = JSON.stringify(pment);
 				vx[4] = midnya;
 				vx[2] = "arg2";
@@ -769,9 +765,6 @@ Bot left	=> bot leave";
 			let { mid, displayName } = await this._client.getProfile();
             this._sendMessage(seq, 'Halo juga '+displayName);
 		}
-		if(txt == 'moshi' || txt == 'mos' || txt == 'Moshi') {
-			this._sendMessage(seq, reply_haihalo);
-		}
 		
 		if(vx[1] == "!grouputil" && seq.from_ == vx[0] && waitMsg == "yes"){
 			if(vx[2]=="arg1"){
@@ -883,7 +876,13 @@ Bot left	=> bot leave";
 		
         const sp = ['sp','Speed','resp','respon'];
         if(sp.includes(txt) && !isBanned(banList, seq.from_)) {
-			const curTime = (Date.now() / 1000);let M = new Message();M.to=seq.to;M.text = '';M.contentType = 1;M.contentPreview = null;M.contentMetadata = null;
+			const curTime = (Date.now() / 1000);
+			let M = new Message();
+			M.to=seq.to;
+			M.text = '';
+			M.contentType = 1;
+			M.contentPreview = null;
+			M.contentMetadata = null;
 			await this._client.sendMessage(0,M);
 			const rtime = (Date.now() / 1000);
             const xtime = rtime	- curTime;
@@ -1025,26 +1024,21 @@ Bot left	=> bot leave";
 				}
 			}
 		}
-		if(txt == "mysquad"){
-		let wahyu = 'u73973a602fcbeff61a047d4966f4397a';
-		let intan = 'u1afdb19243e7233c2b03a691a5a24bd6';
-		let hafid = 'uc185a46d66018210c649a9d7616cc1e5';
-		let silvi = 'u9c76171a662ff162482ecf20486e21cf';
-		let yoga  = 'u05ca28fb987817ad9fb186583ff2634b';
-		let ayu   = 'uc0a973dee79a6efe035f02488cc75cc3';
-		this._inviteIntoGroup(seq.to, wahyu);
-		this._inviteIntoGroup(seq.to, intan);
-		this._inviteIntoGroup(seq.to, hafid);
-		this._inviteIntoGroup(seq.to, silvi);
-		this._inviteIntoGroup(seq.to, yoga);
-		this._inviteIntoGroup(seq.to, ayu);
-		}
-
+		/*
+		if(txt == "mysquad invite" && isAdminOrBot(seq.from_)){
+		let mysquad = ['u73973a602fcbeff61a047d4966f4397a','u1afdb19243e7233c2b03a691a5a24bd6','uc185a46d66018210c649a9d7616cc1e5','u9c76171a662ff162482ecf20486e21cf','u05ca28fb987817ad9fb186583ff2634b','uc0a973dee79a6efe035f02488cc75cc3','u7e9ae368eb72f685a2555f16850618cc'];
+		for(var i = 0; i < mysquad.length; i++){
+			let mysd = await this.isInGroup(seq.to, mysquad[i]);
+			if(typeof mysd !== "undefined" && mysd){
+				this._inviteIntoGroup(seq.to, mysd);
+			}
+		}}
+		*/
 		if(txt == ".status"|| txt == 'Bot stat' || txt == 'bot stat'){
 			this.setState(seq,1)
 		}
 		
-        const action = ['autojoin on','autojoin off','cancel on','cancel off','kick on','kick off','salam on','salam off','protect off','protect on','qr on','qr off']
+        const action = ['autojoin on','autojoin off','cancel on','cancel off','kick on','kick off','salam on','salam off','protect off','protect on','chat on','chat off'];//,'qr on','qr off'
         if(action.includes(txt) && isAdminOrBot(seq.from_)) {
             this.setState(seq,0)
         }
@@ -1163,45 +1157,102 @@ Bot left	=> bot leave";
 		}
 
 		//SPAM HERE
+		if(isAdminOrBot(seq.from_)){
+			var assssa = "up";
+			switch(txt){
+				case '!1':
+				for (var i = 0; i < 10; i++) {
+					this._sendMessage(seq, assssa);
+				}
+					break;
+				case '!2':
+				for (var i = 0; i < 20; i++) {
+					this._sendMessage(seq, assssa);
+				}
+					break;
+				case '!3':
+				for (var i = 0; i < 50; i++) {
+					this._sendMessage(seq, assssa);
+				}
+					break;
+				case '!4':
+				for (var i = 0; i < 100; i++) {
+					this._sendMessage(seq, assssa);
+				}
+					break;
+				case '!5':
+				for (var i = 0; i < 200; i++) {
+					this._sendMessage(seq, assssa);
+				}
+					break;
+			}
+		}
 
-		if(txt == "!1" && isAdminOrBot(seq.from_)) { // untuk spam 
-			let assssa = "up";
-			for (var i = 0; i < 10; i++) {
-                this._sendMessage(seq, assssa);
-            }
-		}
-		
-		if(txt == "!2" && isAdminOrBot(seq.from_)) { // untuk spam 
-			let assssa = "up";
-			for (var i = 0; i < 20; i++) {
-                this._sendMessage(seq, assssa);
-            }
+		//chat bot
+
+		if(txt == 'moshi' || txt == 'mos') {
+			this._sendMessage(seq, reply_haihalo);
 		}
 
-		if(txt == "!3" && isAdminOrBot(seq.from_)) { // untuk spam 
-			let assssa = "up";
-			for (var i = 0; i < 50; i++) {
-                this._sendMessage(seq, assssa);
-            }
+		//chat bot
+
+		if(this.stateStatus.chat == 1){
+			switch(txt){
+				case 'moshi?':
+				this._sendMessage(seq, 'bot kak ^_^');
+				break;
+				case 'moshi siapa?':
+				this._sendMessage(seq, 'bot kak ^_^');
+				break;
+				case 'siapa moshi':
+				this._sendMessage(seq, 'bot kak ^_^');
+				break;
+				case 'halo':
+				this._sendMessage(seq, 'halo disini moshi...');
+				break;
+				case 'hi':
+				this._sendMessage(seq, 'hi disini moshi...');
+				break;
+				case 'pagi':
+				this._sendMessage(seq, 'pagi juga kkak :)');
+				break;
+				case 'morning':
+				this._sendMessage(seq, 'pagi juga kkak :)');
+				break;
+				case 'Siang':
+				this._sendMessage(seq, 'siang juga kkak :)');
+				break;
+				case 'Sore':
+				this._sendMessage(seq, 'sore juga kkak :)');
+				break;
+				case 'malam':
+				this._sendMessage(seq, 'yg bilang ini msih pagi spa kak!?');
+				break;
+				case 'night':
+				this._sendMessage(seq, 'malam juga :*');
+				break;
+				case '@bye':
+				this._sendMessage(seq, 'ihhh kkak main ngusir aja');
+				break;
+				case 'Bye':
+				this._sendMessage(seq, 'byeee, semoga diterima amalnya');
+				break;
+				case 'sayang':
+				this._sendMessage(seq, 'knpa sayangku?');
+				break;
+				case 'Bot':
+				this._sendMessage(seq, 'iya aku bot kak ^_^');
+				break;
+
+			}
 		}
 		
-		if(txt == "!4" && isAdminOrBot(seq.from_)) { // untuk spam 
-			let assssa = "up";
-			for (var i = 0; i < 100; i++) {
-                this._sendMessage(seq, assssa);
-            }
-		}
 		
-		if(txt == "!5" && isAdminOrBot(seq.from_)) { // untuk spam 
-			let assssa = "up";
-			for (var i = 0; i < 200; i++) {
-                this._sendMessage(seq, assssa);
-            }
-		}
-		
+	
+
+		// other
 
     }
-
 }
 
 module.exports = new LINE();
