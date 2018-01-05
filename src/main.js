@@ -761,11 +761,6 @@ Bot left	=> bot leave";
             this.cancelAll(seq.to);
         }else if(txt == "!cancel" && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted !");}
 
-        if(txt == 'halo') {
-			let { mid, displayName } = await this._client.getProfile();
-            this._sendMessage(seq, 'Halo juga '+displayName);
-		}
-		
 		if(vx[1] == "!grouputil" && seq.from_ == vx[0] && waitMsg == "yes"){
 			if(vx[2]=="arg1"){
 			let M = new Message();
