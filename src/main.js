@@ -178,7 +178,7 @@ Bot left	=> bot leave";
 				var kickhim = 'yes';
 			}
 			if(kickhim=='yes'){
-					this._kickMember(operation.param1,[operation.param2]);
+					this._kickMember(op1,[op2]);
 				
 			}
 
@@ -1204,7 +1204,7 @@ Bot left	=> bot leave";
 				case 'moshi siapa?':
 				this._sendMessage(seq, 'bot kak ^_^');
 				break;
-				case 'siapa moshi':
+				case 'siapa moshi?':
 				this._sendMessage(seq, 'bot kak ^_^');
 				break;
 				case 'halo':
@@ -1228,6 +1228,9 @@ Bot left	=> bot leave";
 				case 'malam':
 				this._sendMessage(seq, 'yg bilang ini msih pagi spa kak!?');
 				break;
+				case 'malem':
+				this._sendMessage(seq, 'malam juga kkak :D');
+				break;
 				case 'night':
 				this._sendMessage(seq, 'malam juga :*');
 				break;
@@ -1240,9 +1243,34 @@ Bot left	=> bot leave";
 				case 'sayang':
 				this._sendMessage(seq, 'knpa sayangku?');
 				break;
+				case 'moshi udah makan?':
+				this._sendMessage(seq, 'kepo');
+				break;
+				case 'moshi lagi apa?':
+				this._sendMessage(seq, 'lagi inget mantan kak');
+				break;
+				case 'sayang lagi apa?':
+				this._sendMessage(seq, 'lagi berusaha melupakannya~~');
+				break;
+				case 'sayang udah makan?':
+				this._sendMessage(seq, 'tadi habis makan hati kok');
+				break;
+				case 'gpp':
+				this._sendMessage(seq, 'lah, kenapa kak?');
+				break;
+				case 'dih':
+				this._sendMessage(seq, 'apa u');
+				break;
 				case 'Bot':
 				this._sendMessage(seq, 'iya aku bot kak ^_^');
 				break;
+				case 'gabut':
+				this._sendMessage(seq, 'oh');
+				break;
+				case 'u bau':
+				this._sendMessage(seq, 'u juga :p');
+				break;
+				
 
 			}
 		}
