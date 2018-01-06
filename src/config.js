@@ -1,4 +1,7 @@
-const { hostname, platform } = require('os');
+const {
+  hostname,
+  platform
+} = require('os');
 
 const whichPlatform = platform() === 'darwin' ? 'MAC' : 'win32';
 
@@ -8,7 +11,7 @@ const config = {
   LINE_DOMAIN_TOOFAST: 't.line.naver.jp',
   LINE_DOMAIN: 'gf.line.naver.jp',
   LINE_DOMAIN_2ND: 'gd2.line.naver.jp',
-  LINE_DOMAIN_3RD: 'gfs.line.naver.jp', 
+  LINE_DOMAIN_3RD: 'gfs.line.naver.jp',
   LINE_DOMAIN_4TH: 'gfps.line.naver.jp',
   LINE_KEEP_X: '/r/keep/p/', //https://obs-sg.line-apps.com/r/keep/p/1508751723510tffffffff
   LINE_KEEP: '/kp/api/v21/keep', //Keep -> gfs.line.naver.jp/kp/api/v21/keep/sync.json?revision=0&limit=50&serviceType=1 || fetch.json?startRevision=0&limit=50&serviceType=1
@@ -46,7 +49,7 @@ const config = {
   platform: whichPlatform,
   EMAIL_REGEX: /[^@]+@[^@]+\.[^@]+/,
   Headers: {
-    'User-Agent':'Line/7.14.0 iPAD5,1 10.2.0'// 
+    'User-Agent': 'Line/7.14.0 iPAD5,1 10.2.0' // 
   },
   FILE_DOWNLOAD_LOCATION: '/../download/',
   YT_DL: 'http://www.saveitoffline.com/process/',

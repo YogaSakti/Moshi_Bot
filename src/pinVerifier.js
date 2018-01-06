@@ -13,12 +13,16 @@ class PinVerifier {
     const sessionKey = json.sessionKey;
     const message =
       utf8.encode(chr(sessionKey.length) +
-      sessionKey + chr(this.id.length) +
-      this.id + chr(this.password.length) + this.password);
+        sessionKey + chr(this.id.length) +
+        this.id + chr(this.password.length) + this.password);
     rsa.setPublic(json.nvalue, json.evalue);
     const credentials = rsa.encrypt(message).toString('hex');
     const keyname = json.keynm;
-    return { keyname, credentials, message };
+    return {
+      keyname,
+      credentials,
+      message
+    };
   }
 }
 
