@@ -1421,7 +1421,7 @@ Bot left	=> bot leave";
 			let mes = new Message();
 			mes.to = seq.to
 			mes.text = "ID: "+seq.contentMetadata.mid;
-			this._sendMessage(0, mes);
+			this._client._sendMessage(0, mes);
 			}
 			return;
 		}
@@ -1429,8 +1429,8 @@ Bot left	=> bot leave";
 			let ment = seq.contentMetadata.MENTION;
 			let xment = JSON.parse(ment);
 			let pment = xment.MENTIONEES[0].M;
-			cekid.text = JSON.stringify(pment).replace(/"/g, "");
-			console.info("ada tag");
+			let cekkk = JSON.stringify(pment).replace(/"/g, "");
+			console.info("ada tag"+cekkk);
 		}
 
 	}
