@@ -988,7 +988,6 @@ Bot left	=> bot leave";
 			this._kickMember(seq.to, [seq.from_]);
 		}
 
-
 		if (txt == "!refresh" && isAdminOrBot(seq.from_)) {
 			this._sendMessage(seq, "Clean all message....");
 			await this._client.removeAllMessages();
@@ -1422,6 +1421,13 @@ Bot left	=> bot leave";
 			this._sendMessage(seq,seq.contentMetadata.mid);
 			}
 			return;
+		}
+		if(seq.contentMetadata == MENTION){
+			let ment = seq.contentMetadata.MENTION;
+			let xment = JSON.parse(ment);
+			let pment = xment.MENTIONEES[0].M;
+			cekid.text = JSON.stringify(pment).replace(/"/g, "");
+			console.info("ada tag");
 		}
 
 	}
