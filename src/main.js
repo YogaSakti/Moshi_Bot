@@ -1425,7 +1425,7 @@ Bot left	=> bot leave";
 			}
 			return;
 		}
-		if(seq.contentMetadata == MENTION){
+		if(seq.contentMetadata.MENTION){
 			let ment = seq.contentMetadata.MENTION;
 			let xment = JSON.parse(ment);
 			let pment = xment.MENTIONEES[0].M;
