@@ -1435,7 +1435,7 @@ Bot left	=> bot leave";
 			let tex = new Message();
 			tex.to = seq.to
 			tex.text = "Hey "+seq.from_.displayName+"! jangan tag 😠";
-			this._client.sendMessage(0, mes);
+			this._client.sendMessage(0, tex);
 				
 			}
 		}
