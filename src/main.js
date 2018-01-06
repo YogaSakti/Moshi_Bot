@@ -1418,7 +1418,10 @@ Bot left	=> bot leave";
 		if(seq.contentType == 13) {
 			 seq.contentType = 0;
 			if(!isAdminOrBot(seq.contentMetadata.mid)) {
-			this._sendMessage(seq,seq.contentMetadata.mid);
+			let mes = new Message();
+			mes.to = seq.to
+			mes.text = "ID: "+seq.contentMetadata.mid;
+			this._sendMessage(0, mes);
 			}
 			return;
 		}
