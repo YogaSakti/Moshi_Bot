@@ -1434,7 +1434,8 @@ Bot left	=> bot leave";
 			console.info("ada tag bro");
 			let tex = new Message();
 			tex.to = seq.to
-			tex.text = "Hey "+seq.from_.displayName+"! jangan tag 😠";
+			let fr = seq.from_
+			tex.text = "Hey "+fr.displayName+"! jangan tag 😠";
 			this._client.sendMessage(0, tex);
 				
 			}
