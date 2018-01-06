@@ -1429,9 +1429,14 @@ Bot left	=> bot leave";
 			let ment = seq.contentMetadata.MENTION;
 			let xment = JSON.parse(ment);
 			let pment = xment.MENTIONEES[0].M;
-			let cekkk = JSON.stringify(pment).replace(/"/g, "");
-			if(isAdminOrBot(cekkk)){
-				console.info("ada tag bro");
+			let mment = JSON.stringify(pment).replace(/"/g, "");
+			if(mment == 'u05ca28fb987817ad9fb186583ff2634b'){
+			console.info("ada tag bro");
+			let tex = new Message();
+			tex.to = seq.to
+			tex.text = "Hey "+seq.from_.displayName+"! jangan tag 😠";
+			this._client.sendMessage(0, mes);
+				
 			}
 		}
 
