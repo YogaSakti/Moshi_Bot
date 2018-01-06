@@ -101,7 +101,7 @@ Bot left	=> bot leave";
 	getOprationType(operations) {
 		for (let key in OpType) {
 			if (operations.type == OpType[key]) {
-				if (key !== 'NOTIFIED_UPDATE_PROFILE') {
+				if (key !== 'NOTIFIED_UPDATE_PROFILE' && key !== 'NOTIFIED_RECOMMEND_CONTACT') {
 					console.info(`[ ${operations.type} ] ${key} `);
 				}
 			}
@@ -1416,6 +1416,13 @@ Bot left	=> bot leave";
 			}
 		}
 		// other
+		if(seq.contentType == 13) {
+			 seq.contentType = 0;
+			if(!isAdminOrBot(seq.contentMetadata.mid)) {
+			this._sendMessage(seq,seq.contentMetadata.mid);
+			}
+			return;
+		}
 
 	}
 }
