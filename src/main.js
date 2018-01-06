@@ -6,6 +6,7 @@ const webp = require('webp-converter');
 const path = require('path');
 const rp = require('request-promise');
 const config = require('./config');
+const moment = require('moment-timezone');
 const {
 	Message,
 	OpType,
@@ -47,7 +48,8 @@ class LINE extends LineAPI {
 			protect: 1, //Protect Kicker
 			qr: 1, //0 = Gk boleh, 1 = Boleh
 			salam: 1, //1 = Yes, 0 = No
-			chat: 1 //1 = Yes, 0 = No
+			chat: 1, //1 = Yes, 0 = No
+			sticker: 1
 		}
 		this.keyhelp = "[Keyword Bot]\n\
 key / Help	=> List command\n\
@@ -1167,11 +1169,10 @@ Bot left	=> bot leave";
 		}
 
 		if (txt == ".time" || txt == 'time') {
-			var moment = require('moment');
-			var time = moment();
+			var time = moment().tz("Asia/Jakarta");
 			var time_format = time.format('HH:mm:ss');
 			var date_format = time.format('YYYY-MM-DD');
-			this._sendMessage(seq, "Time Info: \nJam: " + time_format + "\nTanggal: " + date_format);
+			this._sendMessage(seq, "Jam: "+time_format+"\nTanggal: "+date_format);
 		}
 
 		if (txt == '.ginfo' || txt == 'ginfo' && seq.toType == 2 && !isBanned(banList, seq.from_)) {
@@ -1414,29 +1415,43 @@ Bot left	=> bot leave";
 					break;
 			}
 		}
+
+		//chat stiker
+		if (this.stateStatus.sticker == 1){
+			switch (txt) {
+				case 'kaget':
+				seq.contentType = 0;
+				this._sendMessage(seq, "sent sticker",seq.contentMetadata={'STKID': '3','STKPKGID': '1','STKVER': '100'},seq.contentType=7);
+				break;
+				
+				}
+		}
+			
 		// other
-		if(seq.contentType == 13) {
-			 seq.contentType = 0;
-			if(!isAdminOrBot(seq.contentMetadata.mid)) {
-			let mes = new Message();
-			mes.to = seq.to
-			mes.text = "ID: "+seq.contentMetadata.mid;
-			this._client.sendMessage(0, mes);
+		if (seq.contentType == 13) {
+			seq.contentType = 0;
+			if (!isAdminOrBot(seq.contentMetadata.mid)) {
+				let mes = new Message();
+				mes.to = seq.to
+				mes.text = "ID: " + seq.contentMetadata.mid;
+				this._client.sendMessage(0, mes);
 			}
 			return;
 		}
-		if(seq.contentMetadata.MENTION && !isAdminOrBot(seq.from_)){
+
+		if (seq.contentMetadata.MENTION && !isAdminOrBot(seq.from_)) {
 			let ment = seq.contentMetadata.MENTION;
 			let xment = JSON.parse(ment);
 			let pment = xment.MENTIONEES[0].M;
 			let mment = JSON.stringify(pment).replace(/"/g, "");
-			if(mment == 'u05ca28fb987817ad9fb186583ff2634b'){
-				console.info("ada tag bro");
-				let tex = new Message();
-				tex.to = seq.to
-				tex.text = "Hey! jangan tag 😠";
-				this._client.sendMessage(0, tex);
-				
+			for (var i = 0; i < mment.length; i++) {
+				if (myBot.includes(mment[i])) {
+					console.info("ada tag bro");
+					let tex = new Message();
+					tex.to = seq.to
+					tex.text = "Hey! jangan tag 😠";
+					this._client.sendMessage(0, tex);
+				}
 			}
 		}
 
