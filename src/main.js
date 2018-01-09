@@ -1293,7 +1293,7 @@ Bot left	=> bot leave";
 
 		//chat bot
 
-		if (txt == 'moshi' || txt == 'mos') {
+		if (txt == 'moshi') {
 			this._sendMessage(seq, reply_haihalo);
 		}
 
@@ -1429,6 +1429,7 @@ Bot left	=> bot leave";
 					this._client.sendMessage(0, tex);
 				}
 			}
+
 		}
 
 	}
