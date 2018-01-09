@@ -1159,7 +1159,7 @@ Bot left	=> bot leave";
 			this.setState(seq, 1)
 		}
 
-		const action = ['autojoin on', 'autojoin off', 'cancel on', 'cancel off', 'kick on', 'kick off', 'salam on', 'salam off', 'protect off', 'protect on', 'chat on', 'chat off']; //,'qr on','qr off'
+		const action = ['autojoin on', 'autojoin off', 'cancel on', 'cancel off', 'kick on', 'kick off', 'salam on', 'salam off', 'protect off', 'protect on', 'chat on', 'chat off','sticker on','sticker off']; //,'qr on','qr off'
 		if (action.includes(txt) && isAdminOrBot(seq.from_)) {
 			this.setState(seq, 0)
 		}
@@ -1285,34 +1285,9 @@ Bot left	=> bot leave";
 		}
 		*/
 		//SPAM HERE
-		if (isAdminOrBot(seq.from_)) {
-			var assssa = "up";
-			switch (txt) {
-				case '!1':
-					for (var i = 0; i < 10; i++) {
-						this._sendMessage(seq, assssa);
-					}
-					break;
-				case '!2':
-					for (var i = 0; i < 20; i++) {
-						this._sendMessage(seq, assssa);
-					}
-					break;
-				case '!3':
-					for (var i = 0; i < 50; i++) {
-						this._sendMessage(seq, assssa);
-					}
-					break;
-				case '!4':
-					for (var i = 0; i < 100; i++) {
-						this._sendMessage(seq, assssa);
-					}
-					break;
-				case '!5':
-					for (var i = 0; i < 200; i++) {
-						this._sendMessage(seq, assssa);
-					}
-					break;
+		if (cox[0] == '!spam' && isAdminOrBot(seq.from_)) {
+			for (var i = 0; i < cox[1]; i++) {
+			this._sendMessage(seq, cox[2]);
 			}
 		}
 
@@ -1433,7 +1408,7 @@ Bot left	=> bot leave";
 			if (!isAdminOrBot(seq.contentMetadata.mid)) {
 				let mes = new Message();
 				mes.to = seq.to
-				mes.text = "ID: " + seq.contentMetadata.mid;
+				mes.text = "Contact ID: " + seq.contentMetadata.mid;
 				this._client.sendMessage(0, mes);
 			}
 			return;
@@ -1441,6 +1416,7 @@ Bot left	=> bot leave";
 
 		if (seq.contentMetadata.MENTION && !isAdminOrBot(seq.from_)) {
 			let ment = seq.contentMetadata.MENTION;
+			let d = await this._getContacts(seq.from_);
 			let xment = JSON.parse(ment);
 			let pment = xment.MENTIONEES[0].M;
 			let mment = JSON.stringify(pment).replace(/"/g, "");
@@ -1449,7 +1425,7 @@ Bot left	=> bot leave";
 					console.info("ada tag bro");
 					let tex = new Message();
 					tex.to = seq.to
-					tex.text = "Hey! jangan tag 😠";
+					tex.text = "Hey ${d.displayName}!";
 					this._client.sendMessage(0, tex);
 				}
 			}
