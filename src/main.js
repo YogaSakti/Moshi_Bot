@@ -996,7 +996,7 @@ Bot left	=> bot leave";
 			this._sendMessage(seq, "Done !");
 		}
 
-		const sp = ['sp', 'Speed', 'resp', 'respon'];
+		const sp = ['sp', 'speed', 'resp', 'respon'];
 		if (sp.includes(txt) && !isBanned(banList, seq.from_)) {
 			const curTime = (Date.now() / 1000);
 			let M = new Message();
