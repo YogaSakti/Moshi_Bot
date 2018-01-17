@@ -1322,26 +1322,6 @@ Bot left	=> bot leave";
 			return;
 		}
 
-		if (seq.contentMetadata.MENTION && !isAdminOrBot(seq.from_)) {
-			let resp = ["Sorry, i'm busy now","Maaf sedang sibuk","Sibuk gw","Lagi sibuk bro","apa? sibuk gw pm aja","srry sibuk, urgent? call aja"];
-			let isi = random(resp);
-			let ment = seq.contentMetadata.MENTION;
-			let xment = JSON.parse(ment);
-			let zment = xment.MENTIONEES;
-			for (var item of zment) {
-				let men = item.M;
-				if (myBot.includes(men) ) { //&& this.stateStatus.busy == 1
-					console.info("ada tag bro");
-					let tex = new Message();
-					tex.to = seq.to
-					tex.text = "「 Auto Respon 」\n"+isi;
-					this._client.sendMessage(0, tex);
-				break;
-				}
-			}
-			
-		}
-
 	}
 }
 
