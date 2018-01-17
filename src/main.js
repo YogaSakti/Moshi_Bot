@@ -37,6 +37,10 @@ function firstToUpperCase(str) {
 	return str.substr(0, 1).toUpperCase() + str.substr(1);
 }
 
+function random(array){
+	return array[Math.floor(Math.random()*array.length)];
+}
+
 
 class LINE extends LineAPI {
 	constructor() {
