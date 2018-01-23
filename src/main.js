@@ -59,18 +59,20 @@ class LINE extends LineAPI {
 			sticker: 1
 		}
 		this.keyhelp = "[Keyword Bot]\n\
-key / Help	=> List command\n\
-Myid		=> your id\n\
-Ginfo		=> info grup\n\
-Ourl		=> open grup url\n\
-Curl		=> close grup url\n\
-Tag all		=> tag all grup member\n\
-Sider		=> menu sider\n\
-Time		=> time\n\
-Speed		=> cek bot speed\n\
-Bot info	=> contact bot\n\
-Bot stat	=> view bot status\n\
-Bot left	=> bot leave";
+Help	=> List command\n\
+Myid	=> your id\n\
+Ginfo	=> info grup\n\
+Ourl	=> open grup url\n\
+Curl	=> close grup url\n\
+Kickme	=> kick kamu\n\
+Tag all	=> tag all grup member\n\
+Sider	=> menu sider\n\
+Time	=> time\n\
+Speed	=> cek bot speed\n\
+Bot info=> contact bot\n\
+Bot stat=> view bot status\n\
+Runtime	=> cek runtime bot\n\
+Bot left=> bot leave";
 
 		var that = this;
 	}
@@ -349,53 +351,30 @@ Bot left	=> bot leave";
 		}
 	}
 
-	async tagAlls(seq) {
-		let {
-			listMember
-		} = await this.searchGroup(seq.to);
-		seq.text = "";
+	async tagMention(seq, listMember) {
+		seq.text = "====[ Tag All ]====\n";
 		let mentionMemberx = [];
-		for (var i = 0; i < listMember.length; i++) {
-			if (seq.text == null || typeof seq.text === "undefined" || !seq.text) {
-				let namanya = listMember[i].dn;
-				let midnya = listMember[i].mid;
-				seq.text += "@" + namanya + " \n";
-				let member = [namanya];
+        for (var ii = 0; ii < listMember.length; ii++) {
+            let midnya = listMember[ii];
+            let kata = seq.text.split("");
+			let panjang = kata.length;
+            seq.text += "@" + midnya + " \n\n";
+			let member = [midnya];
 
-				let tmp = 0;
-				let mentionMember1 = member.map((v, k) => {
-					let z = tmp += v.length + 3;
-					let end = z;
-					let mentionz = `{"S":"0","E":"${end}","M":"${midnya}"}`;
-					return mentionz;
-				})
-				mentionMemberx.push(mentionMember1);
-			} else {
-				let namanya = listMember[i].dn;
-				let midnya = listMember[i].mid;
-				let kata = seq.text.split("");
-				let panjang = kata.length;
-				seq.text += "@" + namanya + " \n";
-				let member = [namanya];
-
-				let tmp = 0;
-				let mentionMember = member.map((v, k) => {
-					let z = tmp += v.length + 3;
-					let end = z + panjang;
-					let mentionz = `{"S":"${panjang}","E":"${end}","M":"${midnya}"}`;
-					return mentionz;
-				})
-				mentionMemberx.push(mentionMember);
-			}
-		}
-		const tag = {
-			cmddata: {
-				MENTION: `{"MENTIONEES":[${mentionMemberx}]}`
-			}
-		}
+            let tmp = 0;
+            let mentionMember = member.map((v,k) => {
+                let z = tmp += v.length + 3;
+                let end = z + panjang;
+                let mentionz = `{"S":"${panjang}","E":"${end}","M":"${midnya}"}`;
+                return mentionz;
+            })
+            mentionMemberx.push(mentionMember);
+        }
+        const tag = {cmddata: { MENTION: `{"MENTIONEES":[${mentionMemberx}]}` }}
 		seq.contentMetadata = tag.cmddata;
+		seq.text += "Total: " + listMember.length
 		this._client.sendMessage(0, seq);
-	}
+    }
 
 
 	async recheck(cs, group) {
@@ -709,7 +688,7 @@ Bot left	=> bot leave";
 		}
 
 
-		if (txt == ".botleft" || txt == 'Bot left' || txt == 'bot left') {
+		if (txt == ".botleft" || txt == 'bot leave' || txt == 'bot left') {
 			this._client.leaveGroup(0, seq.to);
 		}
 
@@ -848,8 +827,8 @@ Bot left	=> bot leave";
 			this._sendMessage(seq, "Not permitted!");
 		}
 
-		if (txt == ".kickme" && seq.toType == 2 && this.stateStatus.kick == 1) {
-			this._sendMessage(seq, "Ok bang !");
+		if (txt == "kickme" && seq.toType == 2 && this.stateStatus.kick == 1) {
+			this._sendMessage(seq, "Ok!");
 			this._kickMember(seq.to, [seq.from_]);
 		}
 
@@ -875,12 +854,6 @@ Bot left	=> bot leave";
 		} else if (sp.includes(txt) && isBanned(banList, seq.from_)) {
 			this._sendMessage(seq, "Not permitted !");
 		}
-
-		/*if(txt === 'kernel') {
-		    exec('uname -a;ptime;id;whoami',(err, sto) => {
-		        this._sendMessage(seq, sto);
-		    })
-		}*/
 
 		if (txt === '!kickall' && this.stateStatus.kick == 1 && isAdminOrBot(seq.from_) && seq.toType == 2) {
 			let {
@@ -939,13 +912,54 @@ Bot left	=> bot leave";
 		}
 
 		if (txt == '.tagall' || txt == 'tag all' && seq.toType == 2) {
-			let {
-				listMember
-			} = await this.searchGroup(seq.to);
-			const mentions = await this.mention(listMember);
-			seq.contentMetadata = mentions.cmddata;
-			await this._sendMessage(seq, mentions.names.join(''))
-		}
+			let group = await this._getGroup(seq.to);
+            let listMem1 = [];
+            let listMem2 = [];
+            let listMem3 = [];
+            let listMem4 = [];
+            //let listMem5 = [];
+            for(var a = 0; a < 150; a++) {
+                if(group.members[a] !== undefined) {
+                    listMem1.push(group.members[a].mid);
+                }
+            }
+            for(var b = 150; b < 300; b++) {
+                if(group.members[b] !== undefined) {
+                    listMem2.push(group.members[b].mid);
+                }
+            }
+            for(var c = 300; c < 450; c++) {
+                if(group.members[c] !== undefined) {
+                    listMem3.push(group.members[c].mid);
+                }
+            }
+            for(var d = 450; d < 500; d++) {
+                if(group.members[d] !== undefined) {
+                    listMem4.push(group.members[d].mid);
+                }
+            }
+            //for(var e = 400; e < 500; e++) {
+            //    if(group.members[e] !== undefined) {
+            //        listMem5.push(group.members[e].mid);
+            //    }
+			//}
+            if(listMem1.length !== 0) {
+				await this.tagMention(seq, listMem1);
+            }
+            if(listMem2.length !== 0) {
+				await this.tagMention(seq, listMem2);
+            }
+            if(listMem3.length !== 0) {
+				await this.tagMention(seq, listMem3);
+            }
+            if(listMem4.length !== 0) {
+				await this.tagMention(seq, listMem4);
+            }
+            //if(listMem5.length !== 0) {
+            //    await this.tagMention(seq, listMem5);
+			//}
+			
+        }
 
 		if (txt == '0103' && lockt == 1) {
 			let ax = await this._client.getGroup(seq.to);
@@ -1130,7 +1144,7 @@ Bot left	=> bot leave";
 
 		//runtime
 
-		if (txt == 'runtime' && isAdminOrBot(seq.from_)){
+		if (txt == 'runtime'){
 			let rtm = await this._timeParse(Math.floor(process.uptime()).toString());
 			this._sendMessage(seq, "Running for " + rtm);
 		}
@@ -1223,6 +1237,9 @@ Bot left	=> bot leave";
 					break;
 				case 'halo':
 					this._sendMessage(seq, 'halo disini moshi...');
+					break;
+				case 'hey':
+					this._sendMessage(seq, 'hey juga...');
 					break;
 				case 'hi':
 					this._sendMessage(seq, 'hi disini moshi...');
