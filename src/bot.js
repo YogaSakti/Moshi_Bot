@@ -7,14 +7,14 @@ const LINE = require('./main.js');
 | Change it to your authToken / your email & password
 */
 const auth = {
-	authToken: '',
-	certificate: '',
+	authToken: 'EpR1sagay0r0QJcX9tKb.bCOO/5H4f62FSyzyp+jJsW.NsxCY9P2DP+kDx8/RDup2ZiO4KmoXyjckZCTVnsORvU=',
+	certificate: '2fcf175610c86b76334136ec5b02f807ff9e40f8ddf2bb98d089114a45cc15c3',
 	email: '',
 	password: ''
 }
 
-let client = new LineConnect();
-//let client =  new LineConnect(auth);
+//let client = new LineConnect();
+let client =  new LineConnect(auth);
 
 client.startx().then(async(res) => {
 	while (true) {

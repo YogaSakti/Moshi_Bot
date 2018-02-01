@@ -5,8 +5,6 @@ const util = require("util");
 const mime = require("mime");
 const fs = require('fs');
 const path = require('path');
-const rp = require('request-promise');
-const request = require('request');
 
 const LineService = require('../curve-thrift/LineService');
 const {
@@ -16,8 +14,6 @@ const {
   Message,
   LoginRequest
 } = require('../curve-thrift/line_types');
-const imgArr = ['png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp'];
-
 
 const PinVerifier = require('./pinVerifier');
 var config = require('./config');
@@ -29,14 +25,13 @@ function isImg(param) {
   return imgArr.includes(param);
 }
 
+
 class LineAPI {
   constructor() {
     this.config = config;
     this.setTHttpClient();
     this.axz = false;
     this.axy = false;
-    this.gdLine = "http://gd2.line.naver.jp";
-    this.gdLine2 = "http://gf.line.naver.jp";
   }
 
   setTHttpClient(options = {
@@ -45,11 +40,12 @@ class LineAPI {
     headers: this.config.Headers,
     path: this.config.LINE_HTTP_URL,
     https: true
-  }) {
+    }) {
 
     //options.headers['X-Line-Application'] = 'CHROMEOS\x092.0.0\x09Chrome_OS\x091';
-    options.headers['X-Line-Application'] = 'DESKTOPMAC 10.10.2-YOSEMITE-x64    MAC 4.5.0';
-    //options.headers['X-Line-Application'] = 'IOSIPAD 7.18.0    iPhone OS 11.12.1';
+    //options.headers['X-Line-Application'] = 'DESKTOPMAC 10.10.2-YOSEMITE-x64    MAC 4.5.0';
+    options.headers['X-Line-Application'] = 'DESKTOPWIN 7.18.1 YOGS 11.2.5';  
+    //options.headers['X-Line-Application'] = 'IOSIPAD\t7.14.0\tiPhone_OS\t10.12.0';
     this.options = options;
     this.connection =
       thrift.createHttpConnection(this.config.LINE_DOMAIN_4TH, 443, this.options);
@@ -98,7 +94,7 @@ class LineAPI {
   async _qrCodeLogin() {
     this.setTHttpClient();
     return new Promise((resolve, reject) => {
-      this._client.getAuthQrcode(true, 'IPAD', (err, result) => {
+      this._client.getAuthQrcode(true, 'Self_bot', (err, result) => {
         const qrcodeUrl = `line://au/q/${result.verifier}`;
         qrcode.generate(qrcodeUrl, {
           small: true
@@ -123,8 +119,8 @@ class LineAPI {
               this.options.headers['X-Line-Access'] = config.tokenn;
               this.options.path = this.config.LINE_COMMAND_PATH;
               this.setTHttpClient(this.options);
-              //this.options.headers['User-Agent'] = 'Mozilla/5.0 AppleWebKit/537.36 Chrome/63.0.3239.108 Safari/537.36';      
-              this.options.headers['User-Agent'] = 'Line/7.14.0 iPAD5,1 10.2.0';
+              //this.options.headers['User-Agent'] = 'Mozilla/5.0 AppleWebKit/537.36 Chrome/63.0.3239.108 Safari/537.36';    
+              this.options.headers['User-Agent'] = 'Android Mobile Line/7.18.1';
               this.axz = true;
               this.setTHttpClient(this.options);
               this.axz = false;
@@ -221,10 +217,13 @@ class LineAPI {
     return result;
   }
 
-
   async _sendMessage(message, txt, seq = 0) {
     message.text = txt;
     return this._client.sendMessage(0, message);
+  }
+
+  async _sendChatChecked(consumer, lastMessageId, seq = 0) {
+    return this._client.sendChatChecked(seq, consumer, lastMessageId);
   }
 
   async _kickMember(group, memid) {
@@ -235,7 +234,6 @@ class LineAPI {
     return this._client.cancelGroupInvitation(0, groupid, member);
   }
 
-
   async _getGroupsJoined() {
     return await this._client.getGroupIdsJoined()
   }
@@ -243,11 +241,10 @@ class LineAPI {
   async _myProfile() {
     return await this._client.getProfile();
   }
+
   async _getGroupsInvited() {
     return await this._client.getGroupIdsInvited()
   }
-
-
 
   async _acceptGroupInvitation(groupid) {
     this._client.acceptGroupInvitation(0, groupid);
@@ -268,19 +265,19 @@ class LineAPI {
     return await this._client.updateGroup(0, group)
   }
 
-  async _updateGroup(group) {
-    return await this._client.updateGroup(0, group)
-  }
-
   async _updateProfile(profile) {
     return await this._client.updateProfile(0, profile)
   }
 
-  _getContacts(mid) {
+  async _updateProfileAttribute(attr, hash_id){
+    return this._client.updateProfileAttribute(0, attr, hash_id);
+  }
+
+  async _getContacts(mid) {
     return this._client.getContacts(mid)
   }
 
-  _getProfile(mid) {
+  async _getProfile(mid) {
     return this._client.getProfile(mid);
   }
 
@@ -311,12 +308,6 @@ class LineAPI {
   async _acceptGroupInvitationByTicket(gid, ticketID) {
     return await this._client.acceptGroupInvitationByTicket(0, gid, ticketID);
   }
-
-  async _dlImg(uri, filenames, callback) {
-    await rp.head(uri, function (err, res, body) {
-      rp(uri).pipe(fs.createWriteStream(filenames)).on('finish', callback);
-    });
-  };
 
   async _getRSAKeyInfo(provider, callback) {
     let result = await this._client.getRSAKeyInfo(provider);
@@ -364,8 +355,6 @@ class LineAPI {
     }
     return hours + ' Hours ' + minutes + ' Minutes ' + seconds + ' Seconds';
   }
-
-
 
   async _sendFile(message, filepaths, typeContent = 1) {
     let filename = 'media';
@@ -426,214 +415,7 @@ class LineAPI {
     this._sendFile(to, filepaths, 1);
   }
 
-  /*async _getAlbum(gid,ctoken){
-	let bot = await this._client.getProfile();
-	let optionx = {
-        uri: this.gdLine+'/mh/album/v3/albums?sourceType=GROUPHOME&homeId='+gid,
-        headers: {
-            "Content-Type": "application/json",
-			"X-Line-Mid": bot.mid,
-            "x-lct": ctoken
-        }
-    };
-
-    return new Promise((resolve, reject) => (
-      unirest.get(optionx.uri)
-        .headers(optionx.headers)
-        .timeout(120000)
-        .end((res) => (
-          res.error ? reject(res.error) : resolve(res.body)
-        ))
-    ));
-  }
-  
-  async _insertAlbum(gid,albumId,ctoken,img){
-	let bot = await this._client.getProfile();
-	let M = new Message();
-    M.to = gid;
-    M.contentType = 1;
-    M.contentPreview = null;
-	//let imgID = await this._client.sendMessage(0,M);//console.info("image/"+x[x.length-1]);
-	console.info("aa");console.info(albumId);console.info(gid);
-
-	const filepath = path.resolve(img)
-    fs.readFile(filepath,async (err, bufs) => {
-      let imgID = await this._client.sendMessage(0,M);
-      console.log(imgID.id);console.info(gid);console.info(bot.mid);console.info(img);
-        const data = {
-          params: JSON.stringify({
-            userid: gid,
-            oid: imgID.id,
-            type: 'image',
-            ver: '1.0'
-          })
-        };
-        return this.postAlbum("http://obs-jp.line-apps.com/talk/m/object_info.nhn",bot.mid,albumId,ctoken, data, filepath).then((res) => (res.error ? console.log('err',res.error) : console.log('done')));
-    });
-  }
-  
-  async _createAlbum(gid,name,ctoken){
-	let bot = await this._client.getProfile();
-	let optionx = {
-    method: 'POST',
-    uri: this.gdLine+'/mh/album/v3/album?count=1&auto=0&homeId='+gid,
-    body: {
-        type: "image",
-		title: name
-    },
-	headers: {
-        "Content-Type": "application/json",
-		"X-Line-Mid": bot.mid,
-        "x-lct": ctoken
-    },
-    json: true // Automatically stringifies the body to JSON
-    };
-
-    await rp(optionx)
-      .then(function (parsedBody) {
-        //console.info(parsedBody);
-      })
-    .catch(function (err) {
-        //console.info(err);
-      });
-  }
-  
-  async _autoLike(ctoken,limit,comment){
-	let homeres = await this._getPost(limit,ctoken);
-	let ress = homeres.result;
-	let posts = ress.posts;
-	for(var i = 0; i < limit; i++){
-		let liked = posts[i].postInfo.liked;
-		let mids = posts[i].userInfo.mid;
-		let postId = posts[i].postInfo.postId;
-		if(liked === false){
-			await this._liking(mids,postId,ctoken,1002);
-			await this._commentTL(mids,postId,ctoken,comment);
-		}
-		if(posts[i] == posts[posts.length-1]){
-			config.doing = "no";
-		}
-	}
-  }
-  
-  async _commentTL(mid,postId,ctoken,comment){
-	let bot = await this._client.getProfile();
-	let optionx = {
-    method: 'POST',
-    uri: this.gdLine+'/mh/api/v23/comment/create.json?homeId='+mid,
-    body: {
-        commentText: comment,
-		activityExternalId: postId,
-		actorId: mid
-    },
-	headers: {
-        "Content-Type": "application/json",
-		"X-Line-Mid": bot.mid,
-        "x-lct": ctoken
-    },
-    json: true // Automatically stringifies the body to JSON
-    };
-
-    await rp(optionx)
-      .then(function (parsedBody) {
-        //console.info(parsedBody);
-      })
-    .catch(function (err) {
-        //console.info(err);
-      });
-  }
-  
-  async _liking(mid,postId,ctoken,likeTypes = 1001){
-	let bot = await this._client.getProfile();
-	let optionx = {
-    method: 'POST',
-    uri: this.gdLine+'/mh/api/v23/like/create.json?homeId='+mid,
-    body: {
-        likeType: likeTypes,
-		activityExternalId: postId,
-		actorId: mid
-    },
-	headers: {
-        "Content-Type": "application/json",
-		"X-Line-Mid": bot.mid,
-        "x-lct": ctoken
-    },
-    json: true // Automatically stringifies the body to JSON
-    };
-
-    await rp(optionx)
-      .then(function (parsedBody) {
-        //console.info(parsedBody);
-      })
-    .catch(function (err) {
-        // POST failed...
-      });
-  }
-  
-  async _getPost(limit,ctoken){
-	let bot = await this._client.getProfile();let ret = '';
-	let optionx = {
-        uri: this.gdLine+'/tl/mapi/v21/activities',
-        headers: {
-            "Content-Type": "application/json",
-			"X-Line-Mid": bot.mid,
-            "x-lct": ctoken
-        }
-    };
-
-    return new Promise((resolve, reject) => (
-      unirest.get(optionx.uri+'?postLimit='+limit)
-        .headers(optionx.headers)
-        .timeout(120000)
-        .end((res) => (
-          res.error ? reject(res.error) : resolve(res.body)
-        ))
-    ));
-  }
-  
-  async _testT(albumId,ctoken){
-	let bot = await this._client.getProfile();
-	let optionx = {
-		uri: this.gdLine+"/al/",
-		headers: {
-			"X-Line-Mid": bot.mid,
-            "X-Line-ChannelToken": ctoken,
-			"X-Line-Album": albumId
-        }
-	};
-	
-	return new Promise((resolve, reject) => (
-      unirest.get(optionx.uri)
-        .headers(optionx.headers)
-        .timeout(120000)
-        .end((res) => (
-          res.error ? reject(res.error) : resolve(res.body)
-        ))
-    ));
-  }
-  
-  async _getHome(mid,ctoken){
-	let bot = await this._client.getProfile();
-	let optionx = {
-		uri: this.gdLine+"/mh/api/v27/post/list.json",
-		headers: {
-            "Content-Type": "application/json",
-			"X-Line-Mid": bot.mid,
-            "x-lct": ctoken
-        }
-	};
-	
-	return new Promise((resolve, reject) => (
-      unirest.get(optionx.uri+'?homeId='+mid+'&commentLimit=2&sourceType=LINE_PROFILE_COVER&likeLimit=6')
-        .headers(optionx.headers)
-        .timeout(120000)
-        .end((res) => (
-          res.error ? reject(res.error) : resolve(res.body)
-        ))
-    ));
-  }*/
-
-  _isoToDate(param, callback) {
+  async _isoToDate(param, callback) {
     let xdate = new Date(param);
     let xyear = xdate.getFullYear();
     let xmonth = xdate.getMonth() + 1;
@@ -655,7 +437,7 @@ class LineAPI {
     callback(cx);
   }
 
-  _getImageFromLine(oid, callback) {
+  async _getImageFromLine(oid, callback) {
     //console.info(oid);console.info(this.config.Headers);
     unirest.get("https://obs-sg.line-apps.com/talk/m/download.nhn?oid=" + oid + "&tid=original")
       .headers(
@@ -697,8 +479,7 @@ class LineAPI {
     //callback(dir+name+"."+formatType);
   }
 
-
-  postContent(url, data = null, filepath = null) {
+  async postContent(url, data = null, filepath = null) {
     return new Promise((resolve, reject) => (
       unirest.post(url)
       .headers({
@@ -714,23 +495,31 @@ class LineAPI {
     ));
   }
 
-  postAlbum(url, botmid, albumId, ctoken, data = null, filepath = null) {
-    return new Promise((resolve, reject) => (
-      unirest.post(url)
-      .headers({
-        "Content-Type": "application/x-www-form-urlencoded",
-        "X-Line-Mid": botmid,
-        "X-Line-Album": albumId,
+  async _newPost(ctoken, text){
+    let bot = await this._client.getProfile();
+    let optionx = {
+      method: 'POST',
+      uri: this.gdLine + '/mh/api/v24/post/create.json',
+      body: {
+        postInfo: { "readPermission" : { "type": "ALL" } },
+        sourceType: "TIMELINE",
+        contents: { "text": text}
+      },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Line-Mid": bot.mid,
         "x-lct": ctoken,
-        "x-obs-host": "obs-jp.line-apps.com"
+        "User-Agent": "Line/7.14.0"
+      },
+      json: true
+    };
+    await rp(optionx)
+      .then(function (parsedBody) {
+        //console.info(parsedBody);
       })
-      .timeout(120000)
-      .field(data)
-      .attach('files', filepath)
-      .end((res) => {
-        res.error ? reject(res.error) : resolve(res)
-      })
-    ));
+      .catch(function (err) {
+        //console.info(err);
+      });
   }
 
   async _fetchOperations(revision, count) {

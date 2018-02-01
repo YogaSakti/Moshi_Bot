@@ -13,8 +13,8 @@ const {
 	Location
 } = require('../curve-thrift/line_types');
 //let exec = require('child_process').exec;
-
-const myBot = ['u05ca28fb987817ad9fb186583ff2634b', 'u602da153a8b0095217d2fcd9c89a1a92']; //'u32830ece1a56f2a5a1943bc4e58e116f'
+const adm0n = ['u05ca28fb987817ad9fb186583ff2634b'];
+const myBot = ['u05ca28fb987817ad9fb186583ff2634b', 'u602da153a8b0095217d2fcd9c89a1a92']; 
 const banList = []; //Banned list
 var groupList = new Array(); //Group list
 var vx = {};
@@ -37,8 +37,8 @@ function firstToUpperCase(str) {
 	return str.substr(0, 1).toUpperCase() + str.substr(1);
 }
 
-function random(array){
-	return array[Math.floor(Math.random()*array.length)];
+function random(array) {
+	return array[Math.floor(Math.random() * array.length)];
 }
 
 
@@ -58,21 +58,21 @@ class LINE extends LineAPI {
 			chat: 1, //1 = Yes, 0 = No
 			sticker: 1
 		}
-		this.keyhelp = "[Keyword Bot]\n\
-Help	=> List command\n\
-Myid	=> your id\n\
-Ginfo	=> info grup\n\
-Ourl	=> open grup url\n\
-Curl	=> close grup url\n\
-Kickme	=> kick kamu\n\
-Tag all	=> tag all grup member\n\
-Sider	=> menu sider\n\
-Time	=> time\n\
-Speed	=> cek bot speed\n\
-Bot info=> contact bot\n\
-Bot stat=> view bot status\n\
-Runtime	=> cek runtime bot\n\
-Bot left=> bot leave";
+		this.keyhelp = "[Keyword Bot]\
+		\nHelp		=> List command\
+		\nMyid		=> your id\
+		\nGinfo		=> info grup\
+		\nOurl		=> open grup url\
+		\nCurl		=> close grup url\
+		\nKickme	=> kick kamu\
+		\nTag all	=> tag all grup member\
+		\nSider		=> menu sider\
+		\nTime		=> time\
+		\nSpeed		=> cek bot speed\
+		\nRuntime	=> cek runtime bot\
+		\nBot info	=> contact bot\
+		\nBot stat	=> view bot status\
+		\nBot left	=> bot leave";
 
 		var that = this;
 	}
@@ -87,7 +87,7 @@ Bot left=> bot leave";
 		}
 	}
 
-	poll(operation) {
+	async poll(operation) {
 		if (operation.type == 25 || operation.type == 26) {
 			const txt = (operation.message.text !== '' && operation.message.text != null) ? operation.message.text : '';
 			let message = new Message(operation.message);
@@ -95,11 +95,9 @@ Bot left=> bot leave";
 			Object.assign(message, {
 				ct: operation.createdTime.toString()
 			});
-			if (waitMsg == "yes" && operation.message.from_ == vx[0] && this.stateStatus.mute != 1) {
-				this.textMessage(txt, message, message.text)
-			} else if (this.stateStatus.mute != 1) {
+			if (this.stateStatus.mute != 1) {
 				this.textMessage(txt, message);
-			} else if (txt == "!unmute" && this.stateStatus.mute == 1 && isAdminOrBot(operation.message.from_)) {
+			} else if (txt == "unmute" && this.stateStatus.mute == 1) { //&& isAdmin(operation.message.from_)
 				this.stateStatus.mute = 0;
 				this._sendMessage(message, "ヽ(^。^)ノ")
 			} else {
@@ -107,13 +105,105 @@ Bot left=> bot leave";
 			}
 		}
 
+		//forward
+		if (operation.type == 26 && operation.message.to == 'c1d238e8951802d55d41b6904ae0a0bcd'){
+			let sumber = operation.message;
+			let getctc = await this._getContacts([operation.message.from_]);
+			let dari = getctc[0].displayName;
+			let pesan = operation.message.text;
+			let ambl = await this._client.getGroup(operation.message.to)
+			let namgp = ambl.name
+			if(operation.message.contentType== 0 ){
+				let frwd = new Message();
+				frwd.to = 'c462ced7a742ec2b5ce0db5d106e4e03d';
+				frwd.toType = 2;
+				frwd.text = dari+" bilang "+pesan;
+				this._client.sendMessage(0, frwd);
+			}
+			else if (operation.message.contentType== 1){
+				let frwd = new Message();
+				frwd.to = 'c462ced7a742ec2b5ce0db5d106e4e03d';
+				frwd.toType = 2;
+				frwd.text = dari+" ngirim foto";
+				this._client.sendMessage(0, frwd);
+			}
+			else if (operation.message.contentType== 2){
+				let frwd = new Message();
+				frwd.to = 'c462ced7a742ec2b5ce0db5d106e4e03d';
+				frwd.toType = 2;
+				frwd.text = dari+" ngirim video";
+				this._client.sendMessage(0, frwd);
+			}
+			else if (operation.message.contentType== 3){
+				let frwd = new Message();
+				frwd.to = 'c462ced7a742ec2b5ce0db5d106e4e03d';
+				frwd.toType = 2;
+				frwd.text = dari+" ngirim voice note";
+				this._client.sendMessage(0, frwd);
+			}
+			else if (operation.message.contentType== 6){
+				let frwd = new Message();
+				frwd.to = 'c462ced7a742ec2b5ce0db5d106e4e03d';
+				frwd.toType = 2;
+				frwd.text = dari+" nelfon";
+				this._client.sendMessage(0, frwd);
+			}
+			else if (operation.message.contentType== 7){
+			let frwd = new Message();
+				frwd.to = 'c462ced7a742ec2b5ce0db5d106e4e03d';
+				frwd.toType = 2;
+				frwd.text = dari+" ngirim "+operation.message.contentMetadata.STKTXT;
+				this._client.sendMessage(0, frwd);
+			}
+			else if (operation.message.contentType== 13){
+				let cname = operation.message.contentMetadata.displayName;
+				let frwd = new Message();
+					frwd.to = 'c462ced7a742ec2b5ce0db5d106e4e03d';
+					frwd.toType = 2;
+					frwd.text = dari+" ngirim kontaknya "+cname;
+					this._client.sendMessage(0, frwd);
+			}
+			else if (operation.message.contentType== 14){
+				let frwd = new Message();
+					frwd.to = 'c462ced7a742ec2b5ce0db5d106e4e03d';
+					frwd.toType = 2;
+					frwd.text = dari+" ngirim file";
+					this._client.sendMessage(0, frwd);
+			}
+			else if (operation.message.contentType== 15){
+				let frwd = new Message();
+					frwd.to = 'c462ced7a742ec2b5ce0db5d106e4e03d';
+					frwd.toType = 2;
+					frwd.text = dari+" ngirim lokasi";
+					this._client.sendMessage(0, frwd);
+			}
+			else if (operation.message.contentType== 19){
+				let frwd = new Message();
+					frwd.to = 'c462ced7a742ec2b5ce0db5d106e4e03d';
+					frwd.toType = 2;
+					frwd.text = dari+" ngirim music";
+					this._client.sendMessage(0, frwd);
+			}
+			
+			
+		}
+		if (operation.type == 26 && operation.message.to == 'c462ced7a742ec2b5ce0db5d106e4e03d' && operation.message.from_ == adm0n){
+			let pesan = operation.message.text;
+			if(operation.message.contentType== 0 ){
+				let frwd = new Message();
+				frwd.to = 'c1d238e8951802d55d41b6904ae0a0bcd';
+				frwd.toType = 2;
+				frwd.text = "Yoga bilang "+pesan;
+				this._client.sendMessage(0, frwd);
+			}
+		}
+
+		//end forward
+
 		if (operation.type == 13 && this.stateStatus.cancel == 1 && !isAdminOrBot(operation.param2)) { //someone inviting..
 			this.cancelAll(operation.param1);
 		}
 
-		if (operation.type == 100 || operation.type == 101 || operation.type == 102 || operation.type == 103 || operation.type == 104 || operation.type == 105 || operation.type == 106 || operation.type == 107 || operation.type == 108 || operation.type == 109 || operation.type == 110 || operation.type == 111 || operation.type == 112 || operation.type == 113 || operation.type == 114 || operation.type == 115 || operation.type == 116 || operation.type == 117 || operation.type == 118 || operation.type == 119 || operation.type == 120 || operation.type == 121 || operation.type == 122 || operation.type == 123 || operation.type == 124 || operation.type == 125 || operation.type == 126 || operation.type == 127 || operation.type == 128 || operation.type == 129 || operation.type == 130 || operation.type == 131 || operation.type == 132 || operation.type == 133 || operation.type == 134 || operation.type == 135 || operation.type == 136 || operation.type == 137 || operation.type == 138 || operation.type == 139 || operation.type == 140 || operation.type == 141 || operation.type == 142 || operation.type == 143 || operation.type == 144 || operation.type == 145 || operation.type == 146 || operation.type == 147 || operation.type == 148 || operation.type == 149 || operation.type == 150) {
-			console.info(operation);
-		}
 
 		if (operation.type == 16 && this.stateStatus.salam == 1) { //join group
 			let halo = new Message();
@@ -354,28 +444,31 @@ Bot left=> bot leave";
 	async tagMention(seq, listMember) {
 		seq.text = "====[ Tag All ]====\n";
 		let mentionMemberx = [];
-        for (var ii = 0; ii < listMember.length; ii++) {
-            let midnya = listMember[ii];
-            let kata = seq.text.split("");
+		for (var ii = 0; ii < listMember.length; ii++) {
+			let midnya = listMember[ii];
+			let kata = seq.text.split("");
 			let panjang = kata.length;
-            seq.text += "@" + midnya + " \n\n";
+			seq.text += "@" + midnya + " \n\n";
 			let member = [midnya];
 
-            let tmp = 0;
-            let mentionMember = member.map((v,k) => {
-                let z = tmp += v.length + 3;
-                let end = z + panjang;
-                let mentionz = `{"S":"${panjang}","E":"${end}","M":"${midnya}"}`;
-                return mentionz;
-            })
-            mentionMemberx.push(mentionMember);
-        }
-        const tag = {cmddata: { MENTION: `{"MENTIONEES":[${mentionMemberx}]}` }}
+			let tmp = 0;
+			let mentionMember = member.map((v, k) => {
+				let z = tmp += v.length + 3;
+				let end = z + panjang;
+				let mentionz = `{"S":"${panjang}","E":"${end}","M":"${midnya}"}`;
+				return mentionz;
+			})
+			mentionMemberx.push(mentionMember);
+		}
+		const tag = {
+			cmddata: {
+				MENTION: `{"MENTIONEES":[${mentionMemberx}]}`
+			}
+		}
 		seq.contentMetadata = tag.cmddata;
 		seq.text += "Total: " + listMember.length
 		this._client.sendMessage(0, seq);
-    }
-
+	}
 
 	async recheck(cs, group) {
 		let users;
@@ -407,24 +500,24 @@ Bot left=> bot leave";
 	}
 
 	async cloneContactProfile() {
-        let aaa = clone[0];
+		let aaa = clone[0];
 		let bbb = await this._myProfile();
-        bbb.displayName = aaa.nama;
-        bbb.statusMessage = aaa.status;
+		bbb.displayName = aaa.nama;
+		bbb.statusMessage = aaa.status;
 		bbb.pictureStatus = aaa.pict;
-        this._updateProfileAttribute(8, aaa.pict);
-        this._updateProfile(bbb);
-    }
+		this._updateProfileAttribute(8, aaa.pict);
+		this._updateProfile(bbb);
+	}
 
-    async returnProfile() {
-        let aaa = backupProfile[0];
-        let bbb = await this._myProfile();
-        bbb.displayName = aaa.nama;
-        bbb.statusMessage = aaa.status;
+	async returnProfile() {
+		let aaa = backupProfile[0];
+		let bbb = await this._myProfile();
+		bbb.displayName = aaa.nama;
+		bbb.statusMessage = aaa.status;
 		bbb.pictureStatus = aaa.pict;
-        this._updateProfileAttribute(8, aaa.pict);
-        this._updateProfile(bbb);
-    }
+		this._updateProfileAttribute(8, aaa.pict);
+		this._updateProfile(bbb);
+	}
 
 
 	async textMessage(textMessages, seq, param, lockt) {
@@ -436,132 +529,6 @@ Bot left=> bot leave";
 		const cot = txt.split('@');
 		const com = txt.split(':');
 		const cox = txt.split(' ');
-
-		var optreply_haihalo = ['ya', 'nani?', 'apaan?', 'hmm', 'kenapa', 'apa?', 'yoo', 'iya,', 'ea', 'iyah'];
-		var randomNumber1 = Math.floor(Math.random() * optreply_haihalo.length);
-		var reply_haihalo = (optreply_haihalo[randomNumber1]);
-		/*
-				if(vx[1] == "!sendcontact" && seq.from_ == vx[0] && waitMsg == "yes"){
-					let panjang = txt.split("");
-					if(txt == "cancel"){
-						vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
-						this._sendMessage(seq,"# CANCELLED");
-					}else if(txt == "me"){
-						vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
-						seq.text = "Me";seq.contentType = 13;
-						seq.contentMetadata = { mid: seq.from_ };
-						this._client.sendMessage(0, seq);
-					}else if(cot[1]){
-						vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
-						let ment = seq.contentMetadata.MENTION;
-					    let xment = JSON.parse(ment);let pment = xment.MENTIONEES[0].M;
-						seq.text = "Me";seq.contentType = 13;
-						seq.contentMetadata = { mid: pment };
-						this._client.sendMessage(0, seq);
-					}else if(vx[2] == "arg1" && panjang.length > 30 && panjang[0] == "u"){
-						vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
-						seq.text = "Me";seq.contentType = 13;
-						seq.contentMetadata = { mid: txt };
-						this._client.sendMessage(0, seq);
-					}else{
-						this._sendMessage(seq,"Tag orangnya atau kirim midnya bang !");
-					}
-				}
-				if(txt == "!sendcontact" && !isBanned(banList, seq.from_)){
-					if(vx[2] == null || typeof vx[2] === "undefined" || !vx[2]){
-					    waitMsg = "yes";
-					    vx[0] = seq.from_;vx[1] = txt;vx[2] = "arg1";
-					    this._sendMessage(seq,"Kontaknya siapa bang ? #Tag orangnya atau kirim midnya");
-					}else{
-						waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
-						this._sendMessage(seq,"#CANCELLED");
-					}
-				}else if(txt == '!sendcontact' && isBanned(banList, seq.from_)){this._sendMessage(seq,"Not permitted !");}
-
-				if(vx[1] == "!addcontact" && seq.from_ == vx[0] && waitMsg == "yes"){
-					let panjang = txt.split("");
-					if(txt == "cancel"){
-						vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
-						this._sendMessage(seq,"# CANCELLED");
-					}else if(seq.contentType == 13){
-						vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
-						let midnya = seq.contentMetadata.mid;
-						let listContacts = await this._client.getAllContactIds();
-						for(var i = 0; i < listContacts.length; i++){
-							if(listContacts[i] == midnya){
-								vx[4] = "sudah";
-								break;
-							}
-						}
-						let bang = new Message();
-						bang.to = seq.to;
-						if(vx[4] == "sudah"){
-							bang.text = "Dia sudah masuk friendlist bang, gk bisa ku add lagi !";
-							this._client.sendMessage(0, bang);
-						}else{
-						    bang.text = "Ok bang !, Sudah ku add !";
-						    await this._client.findAndAddContactsByMid(seq, midnya);
-						    this._client.sendMessage(0, bang);
-						}vx[4] = "";
-					}else if(cot[1]){
-						vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
-						let ment = seq.contentMetadata.MENTION;
-					    let xment = JSON.parse(ment);let pment = xment.MENTIONEES[0].M;let midnya = pment;
-						let listContacts = await this._client.getAllContactIds();
-						for(var i = 0; i < listContacts.length; i++){
-							if(listContacts[i] == midnya){
-								vx[4] = "sudah";
-								break;
-							}
-						}
-						let bang = new Message();
-						bang.to = seq.to;
-						if(vx[4] == "sudah"){
-							bang.text = "Dia sudah masuk friendlist bang, gk bisa ku add lagi !";
-							this._client.sendMessage(0, bang);
-						}else{
-						    bang.text = "Ok bang !, Sudah ku add !";
-						    await this._client.findAndAddContactsByMid(seq, midnya);
-						    this._client.sendMessage(0, bang);
-						}vx[4] = "";
-					}else if(vx[2] == "arg1" && panjang.length > 30 && panjang[0] == "u"){
-						vx[0] = "";vx[1] = "";waitMsg = "no";vx[2] = "";vx[3] = "";
-						let midnya = txt;
-						let listContacts = await this._client.getAllContactIds();
-						for(var i = 0; i < listContacts.length; i++){
-							if(listContacts[i] == midnya){
-								vx[4] = "sudah";
-								break;
-							}
-						}
-						let bang = new Message();
-						bang.to = seq.to;
-						if(vx[4] == "sudah"){
-							bang.text = "Dia sudah masuk friendlist bang, gk bisa ku add lagi !";
-							this._client.sendMessage(0, bang);
-						}else{
-						    bang.text = "Ok bang !, Sudah ku add !";
-						    await this._client.findAndAddContactsByMid(seq, midnya);
-						    this._client.sendMessage(0, bang);
-						}vx[4] = "";
-					}else{
-						let bang = new Message();
-						bang.to = seq.to;
-						bang.text = "# How to !addcontact\n-Kirim Contact Orang Yang Mau Di Add\n-Kirim Mid Orang Yang Mau Di Add\n-Atau Tag Orang Yang Mau Di Add";
-						this._client.sendMessage(0,bang);
-					}
-				}
-				if(txt == "!addcontact" && isAdminOrBot(seq.from_)){
-					if(vx[2] == null || typeof vx[2] === "undefined" || !vx[2]){
-					    waitMsg = "yes";
-					    vx[0] = seq.from_;vx[1] = txt;vx[2] = "arg1";
-					    this._sendMessage(seq,"Kontaknya siapa bang ? #Tag orangnya atau kirim kontaknya");
-					}else{
-						waitMsg = "no";vx[0] = "";vx[1] = "";vx[2] = "";vx[3] = "";
-						this._sendMessage(seq,"#CANCELLED");
-					}
-				}else if(txt == '!addcontact' && !isAdminOrBot(seq.from_)){this._sendMessage(seq,"Not permitted !");}
-				*/
 
 		if (vx[1] == "!ban" && seq.from_ == vx[0] && waitMsg == "yes") {
 			let panjang = txt.split("");
@@ -687,9 +654,13 @@ Bot left=> bot leave";
 			this._sendMessage(seq, seq.text);
 		}
 
-
-		if (txt == ".botleft" || txt == 'bot leave' || txt == 'bot left') {
-			this._client.leaveGroup(0, seq.to);
+		if (txt == "!kickban" && isAdminOrBot(seq.from_)) {
+			for (var i = 0; i < banList.length; i++) {
+				let adaGk = await this.isInGroup(seq.to, banList[i]);
+				if (typeof adaGk !== "undefined" && adaGk) {
+					this._kickMember(seq.to, adaGk);
+				}
+			}
 		}
 
 		if (txt == "!mute" && isAdminOrBot(seq.from_)) {
@@ -827,32 +798,10 @@ Bot left=> bot leave";
 			this._sendMessage(seq, "Not permitted!");
 		}
 
-		if (txt == "kickme" && seq.toType == 2 && this.stateStatus.kick == 1) {
-			this._sendMessage(seq, "Ok!");
-			this._kickMember(seq.to, [seq.from_]);
-		}
-
 		if (txt == "!refresh" && isAdminOrBot(seq.from_)) {
 			this._sendMessage(seq, "Clean all message....");
 			await this._client.removeAllMessages();
 			this._sendMessage(seq, "Done !");
-		}
-
-		const sp = ['sp', 'speed', 'resp', 'respon'];
-		if (sp.includes(txt) && !isBanned(banList, seq.from_)) {
-			const curTime = (Date.now() / 1000);
-			let M = new Message();
-			M.to = seq.to;
-			M.text = '';
-			M.contentType = 1;
-			M.contentPreview = null;
-			M.contentMetadata = null;
-			await this._client.sendMessage(0, M);
-			const rtime = (Date.now() / 1000);
-			const xtime = rtime - curTime;
-			this._sendMessage(seq, xtime + ' second');
-		} else if (sp.includes(txt) && isBanned(banList, seq.from_)) {
-			this._sendMessage(seq, "Not permitted !");
 		}
 
 		if (txt === '!kickall' && this.stateStatus.kick == 1 && isAdminOrBot(seq.from_) && seq.toType == 2) {
@@ -868,15 +817,15 @@ Bot left=> bot leave";
 			this._sendMessage(seq, "Not permitted !");
 		}
 
-		if (txt == '.key' || txt == 'help' || txt == 'key') {
-			let botOwner = await this._client.getContacts([myBot[0]]);
-			let {
-				mid,
-				displayName
-			} = await this._client.getProfile();
-			seq.text = this.keyhelp;
-			this._client.sendMessage(0, seq);
+		if (txt == 'boom!!' && isAdminOrBot(seq.from_)) {
+			seq.contentType = 13,
+				seq.contentMetadata = {
+					mid: "u05ca28fb987817ad9fb186583ff2634b',"
+				}
+			this._client.sendMessage(1, seq);
 		}
+
+		//============================================================================================================================
 
 		if (txt == '0101' && lockt == 1) { //Jangan dicoba (gk ada efek)
 			let {
@@ -911,61 +860,9 @@ Bot left=> bot leave";
 			}
 		}
 
-		if (txt == '.tagall' || txt == 'tag all' && seq.toType == 2) {
-			let group = await this._getGroup(seq.to);
-            let listMem1 = [];
-            let listMem2 = [];
-            let listMem3 = [];
-            let listMem4 = [];
-            //let listMem5 = [];
-            for(var a = 0; a < 150; a++) {
-                if(group.members[a] !== undefined) {
-                    listMem1.push(group.members[a].mid);
-                }
-            }
-            for(var b = 150; b < 300; b++) {
-                if(group.members[b] !== undefined) {
-                    listMem2.push(group.members[b].mid);
-                }
-            }
-            for(var c = 300; c < 450; c++) {
-                if(group.members[c] !== undefined) {
-                    listMem3.push(group.members[c].mid);
-                }
-            }
-            for(var d = 450; d < 500; d++) {
-                if(group.members[d] !== undefined) {
-                    listMem4.push(group.members[d].mid);
-                }
-            }
-            //for(var e = 400; e < 500; e++) {
-            //    if(group.members[e] !== undefined) {
-            //        listMem5.push(group.members[e].mid);
-            //    }
-			//}
-            if(listMem1.length !== 0) {
-				await this.tagMention(seq, listMem1);
-            }
-            if(listMem2.length !== 0) {
-				await this.tagMention(seq, listMem2);
-            }
-            if(listMem3.length !== 0) {
-				await this.tagMention(seq, listMem3);
-            }
-            if(listMem4.length !== 0) {
-				await this.tagMention(seq, listMem4);
-            }
-            //if(listMem5.length !== 0) {
-            //    await this.tagMention(seq, listMem5);
-			//}
-			
-        }
-
 		if (txt == '0103' && lockt == 1) {
 			let ax = await this._client.getGroup(seq.to);
-			if (ax.preventJoinByTicket === true) {
-
-			} else {
+			if (ax.preventJoinByTicket === true) {} else {
 				ax.preventJoinByTicket = true;
 				await this._client.updateGroup(0, ax);
 			}
@@ -977,7 +874,101 @@ Bot left=> bot leave";
 				ax.preventJoinByTicket = false;
 				await this._client.updateGroup(0, ax);
 			}
+		}
 
+
+		//============================================================================================================================
+
+		if (txt == '.key' || txt == 'help' || txt == 'key') {
+			let botOwner = await this._client.getContacts([myBot[0]]);
+			let {
+				mid,
+				displayName
+			} = await this._client.getProfile();
+			seq.text = this.keyhelp;
+			this._client.sendMessage(0, seq);
+		}
+
+		if (txt == ".botleft" || txt == 'bot leave' || txt == 'bot left') {
+			this._client.leaveGroup(0, seq.to);
+		}
+
+
+
+		if (txt == "kickme" && seq.toType == 2 && this.stateStatus.kick == 1) {
+			this._sendMessage(seq, "Ok!");
+			this._kickMember(seq.to, [seq.from_]);
+		}
+
+		const sp = ['sp', 'speed', 'resp', 'respon'];
+		if (sp.includes(txt) && !isBanned(banList, seq.from_)) {
+			const curTime = (Date.now() / 1000);
+			let M = new Message();
+			M.to = seq.to;
+			M.text = '';
+			M.contentType = 1;
+			M.contentPreview = null;
+			M.contentMetadata = null;
+			await this._client.sendMessage(0, M);
+			const rtime = (Date.now() / 1000);
+			const xtime = rtime - curTime;
+			this._sendMessage(seq, xtime + ' second');
+		} else if (sp.includes(txt) && isBanned(banList, seq.from_)) {
+			this._sendMessage(seq, "Not permitted !");
+		}
+
+		if (txt == '.tagall' || txt == 'tag all' && seq.toType == 2) {
+			let group = await this._getGroup(seq.to);
+			let listMem1 = [];
+			let listMem2 = [];
+			let listMem3 = [];
+			let listMem4 = [];
+			//let listMem5 = [];
+			for (var a = 0; a < 150; a++) {
+				if (group.members[a] !== undefined) {
+					listMem1.push(group.members[a].mid);
+				}
+			}
+			for (var b = 150; b < 300; b++) {
+				if (group.members[b] !== undefined) {
+					listMem2.push(group.members[b].mid);
+				}
+			}
+			for (var c = 300; c < 450; c++) {
+				if (group.members[c] !== undefined) {
+					listMem3.push(group.members[c].mid);
+				}
+			}
+			for (var d = 450; d < 500; d++) {
+				if (group.members[d] !== undefined) {
+					listMem4.push(group.members[d].mid);
+				}
+			}
+			//for(var e = 400; e < 500; e++) {
+			//    if(group.members[e] !== undefined) {
+			//        listMem5.push(group.members[e].mid);
+			//    }
+			//}
+			if (listMem1.length !== 0) {
+				await this.tagMention(seq, listMem1);
+			}
+			if (listMem2.length !== 0) {
+				await this.tagMention(seq, listMem2);
+			}
+			if (listMem3.length !== 0) {
+				await this.tagMention(seq, listMem3);
+			}
+			if (listMem4.length !== 0) {
+				await this.tagMention(seq, listMem4);
+			}
+			//if(listMem5.length !== 0) {
+			//    await this.tagMention(seq, listMem5);
+			//}
+
+		}
+
+		if (txt == 'sider' || txt == '.sider') {
+			this._sendMessage(seq, `「  Sider  」\n.set				=> untuk set point\n.recheck	=> untuk check result\n.clear			=> remove result`)
 		}
 
 		if (txt == '.set') {
@@ -998,45 +989,31 @@ Bot left=> bot leave";
 			await this._sendMessage(seq, mentions.names.join(''));
 		}
 
-		if (txt == 'sider' || txt == '.sider') {
-			this._sendMessage(seq, `「  Sider  」\n.set				=> untuk set point\n.recheck	=> untuk check result\n.clear			=> remove result`)
-		}
 
 		if (txt == '.botinfo' || txt == 'bot info') {
+			let groupList = [];
+			let listGroups = await this._client.getGroupIdsJoined();
+			listGroups.forEach(function (item, index, array) {
+				groupList.push(item);
+			});
+			let GCount = groupList.length;
 			let probot = await this._client.getProfile();
 			let settings = await this._client.getSettings();
 			let M = new Message();
 			M.to = seq.to;
-			M.text = 'Bot Name: ' + probot.displayName + '\n\
-			Bot LINE_ID: line://ti/p/~fee.moe\n\
-			Bot Creator: Yogs\nANTI TEAM 😎';
+			M.text = 'Bot Name: ' + probot.displayName + '\
+			\nBot LINE_ID: line://ti/p/~fee.moe\
+			\nBot Creator: Yogs\
+			\nGroup Joined: ' + GCount;
 			this._client.sendMessage(0, M);
 			//Bot Ticket: http://line.me/ti/p/'+settings.contactMyTicket+'\n\
 		}
 
-		if (txt == "!kickban" && isAdminOrBot(seq.from_)) {
-			for (var i = 0; i < banList.length; i++) {
-				let adaGk = await this.isInGroup(seq.to, banList[i]);
-				if (typeof adaGk !== "undefined" && adaGk) {
-					this._kickMember(seq.to, adaGk);
-				}
-			}
-		}
-		/*
-		if(txt == "mysquad invite" && isAdminOrBot(seq.from_)){
-		const mysquad = ['u73973a602fcbeff61a047d4966f4397a','u1afdb19243e7233c2b03a691a5a24bd6','uc185a46d66018210c649a9d7616cc1e5','u9c76171a662ff162482ecf20486e21cf','u05ca28fb987817ad9fb186583ff2634b','uc0a973dee79a6efe035f02488cc75cc3','u7e9ae368eb72f685a2555f16850618cc'];
-		for(var i = 0; i < mysquad.length; i++){
-			let mysd = await this.isInGroup(seq.to, mysquad[i]);
-			if(typeof mysd !== "undefined" && mysd){
-				this._inviteIntoGroup(seq.to, mysd);
-			}
-		}}
-		*/
 		if (txt == ".status" || txt == 'bot stat') {
 			this.setState(seq, 1)
 		}
 
-		const action = ['autojoin on', 'autojoin off', 'cancel on', 'cancel off', 'kick on', 'kick off', 'salam on', 'salam off', 'protect off', 'protect on', 'chat on', 'chat off','sticker on','sticker off']; //,'qr on','qr off'
+		const action = ['autojoin on', 'autojoin off', 'cancel on', 'cancel off', 'kick on', 'kick off', 'salam on', 'salam off', 'protect off', 'protect on', 'chat on', 'chat off', 'sticker on', 'sticker off']; //,'qr on','qr off'
 		if (action.includes(txt) && isAdminOrBot(seq.from_)) {
 			this.setState(seq, 0)
 		}
@@ -1049,7 +1026,7 @@ Bot left=> bot leave";
 			var time = moment().tz("Asia/Jakarta");
 			var time_format = time.format('HH:mm:ss');
 			var date_format = time.format('YYYY-MM-DD');
-			this._sendMessage(seq, "Jam: "+time_format+"\nTanggal: "+date_format);
+			this._sendMessage(seq, "Jam: " + time_format + "\nTanggal: " + date_format);
 		}
 
 		if (txt == '.ginfo' || txt == 'ginfo' && seq.toType == 2) {
@@ -1081,13 +1058,13 @@ Bot left=> bot leave";
 			let bang = new Message();
 			bang.to = seq.to;
 
-			bang.text = "# Group Name:\n" + gname + "\n\
-			\n# Group ID:\n" + gid + "\n\
-			\n# Group Creator:\n" + gcreator + "\n\
-			\n# Group CreatedTime:\n" + createdTime + "\n\
-			\n# Group Ticket:\n" + ticketg + "\n\
-			\n# Member: " + memberCount + "\n\
-			\n# Pending: " + pendingCount + "\n\
+			bang.text = "# Group Name:\n" + gname + "\
+			\n# Group ID:\n" + gid + "\
+			\n# Group Creator:\n" + gcreator + "\
+			\n# Group CreatedTime:\n" + createdTime + "\
+			\n# Group Ticket:\n" + ticketg + "\
+			\n# Member: " + memberCount + "\
+			\n# Pending: " + pendingCount + "\
 			\n# QR: " + gqr;
 			//\n# Group Cover:\nhttp://dl.profile.line.naver.jp/"+gcover
 			this._client.sendMessage(0, bang);
@@ -1144,79 +1121,75 @@ Bot left=> bot leave";
 
 		//runtime
 
-		if (txt == 'runtime'){
+		if (txt == 'runtime') {
 			let rtm = await this._timeParse(Math.floor(process.uptime()).toString());
 			this._sendMessage(seq, "Running for " + rtm);
 		}
 
 		//clone
 
-		if(cot[0] == '/clone ' && isAdminOrBot(seq.from_)) {
+		if (cot[0] == '/clone ' && isAdminOrBot(seq.from_)) {
 			let pment = JSON.parse(seq.contentMetadata.MENTION).MENTIONEES[0].M;
 			var cln = await this._getContacts([pment]);
 			clone.push({
 				nama: cln[0].displayName,
-                status: cln[0].statusMessage,
-                pict: cln[0].pictureStatus
+				status: cln[0].statusMessage,
+				pict: cln[0].pictureStatus
 			});
 			console.log(clone);
 			this.cloneContactProfile();
-            let a = new Message();
-            a.to = seq.to;
-            a.text = "Success copying "+ cot[1];
-            this._client.sendMessage(0,a);
+			let a = new Message();
+			a.to = seq.to;
+			a.text = "Success copying " + cot[1];
+			this._client.sendMessage(0, a);
 		}
-		
-		if(txt == '/backup' && isAdminOrBot(seq.from_)) {
+
+		if (txt == '/backup' && isAdminOrBot(seq.from_)) {
 			var bot = await this._myProfile();
 			backupProfile = [];
-            backupProfile.push({
-                nama: bot.displayName,
-                status: bot.statusMessage,
-                pict: bot.pictureStatus
+			backupProfile.push({
+				nama: bot.displayName,
+				status: bot.statusMessage,
+				pict: bot.pictureStatus
 			});
 			console.log(backupProfile);
-            this._sendMessage(seq,"Saved");
-        }
+			this._sendMessage(seq, "Saved");
+		}
 
 		// join by ticket
-		
-		if(gTicket[0] == "!join " && isAdminOrBot(seq.from_)){
+
+		if (gTicket[0] == "!join " && isAdminOrBot(seq.from_)) {
 			let sudah = "no";
 			let grp = await this._client.findGroupByTicket(gTicket[1]);
 			let lGroup = await this._client.getGroupIdsJoined();
-			for(var i = 0; i < lGroup.length; i++){
-				if(grp.id == lGroup[i]){
+			for (var i = 0; i < lGroup.length; i++) {
+				if (grp.id == lGroup[i]) {
 					sudah = "ya";
 				}
 			}
-			if(sudah == "ya"){
+			if (sudah == "ya") {
 				let bang = new Message();
 				bang.to = seq.to;
 				bang.text = "Sudah";
-				this._client.sendMessage(0,bang);
-			}else if(sudah == "no"){
-				await this._acceptGroupInvitationByTicket(grp.id,gTicket[1]);
+				this._client.sendMessage(0, bang);
+			} else if (sudah == "no") {
+				await this._acceptGroupInvitationByTicket(grp.id, gTicket[1]);
 			}
 		}
 
 		//SPAM HERE
 		if (cox[0] == '!spam' && isAdminOrBot(seq.from_)) {
 			for (var i = 0; i < cox[1]; i++) {
-			this._sendMessage(seq, cox[2]);
+				this._sendMessage(seq, cox[2]);
 			}
 		}
 
 		//chat bot
 
 		if (txt == 'moshi') {
-			this._sendMessage(seq, reply_haihalo);
-		}
-
-		if(txt == 'boom!!' && isAdminOrBot(seq.from_)){
-			seq.contentType=13,
-			seq.contentMetadata={ mid: "u05ca28fb987817ad9fb186583ff2634b'," }
-			this._client.sendMessage(1, seq);
+			let resp = ['ya', 'hah?', 'apaan?', 'hmm', 'kenapa', 'apa?', 'yoo', 'iya,', 'ea','siapa ya?','ada apa?','ya, ada apa?'];
+			let isi = random(resp);
+			this._sendMessage(seq, isi);
 		}
 
 		//chat bot
@@ -1313,20 +1286,27 @@ Bot left=> bot leave";
 				case 'moshi jahat':
 					this._sendMessage(seq, 'sok tau');
 					break;
+				case 'jelek':
+				this._sendMessage(seq, 'y');
+				break;
 			}
 		}
 
 		//chat stiker
-		if (this.stateStatus.sticker == 1){
+		if (this.stateStatus.sticker == 1) {
 			switch (txt) {
 				case 'kaget':
-				seq.contentType = 0;
-				this._sendMessage(seq, "sent sticker",seq.contentMetadata={'STKID': '3','STKPKGID': '1','STKVER': '100'},seq.contentType=7);
-				break;
-				
-				}
+					seq.contentType = 0;
+					this._sendMessage(seq, "sent sticker", seq.contentMetadata = {
+						'STKID': '3',
+						'STKPKGID': '1',
+						'STKVER': '100'
+					}, seq.contentType = 7);
+					break;
+
+			}
 		}
-			
+
 		// other
 		if (seq.contentType == 13) {
 			seq.contentType = 0;
