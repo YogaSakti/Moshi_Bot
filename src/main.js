@@ -303,9 +303,17 @@ class LINE extends LineAPI {
 
 		if (operation.type == 13) { // diinvite
 			if (this.stateStatus.autojoin == 1 || isAdminOrBot(operation.param2)) {
-				return this._acceptGroupInvitation(operation.param1);
+				this._acceptGroupInvitation(operation.param1);
+				if ( !isAdminOrBot(operation.param2) && grp.members.length < 10){
+					let halo = new Message();
+					halo.to = operation.param1;
+					halo.text = "Membernya cuma "+grp.members.length+" aku gamau, pokoknnya membernya harus diatas 10 baru aku mau join :p \nbyee~";
+					this._client.sendMessage(0, halo);
+					this._client.leaveGroup(0, operation.param1);
+					console.log("Member kurang");
+				}
 			} else {
-				return this._cancel(operation.param1, operation.param2);
+				this._cancel(operation.param1, operation.param2);
 			}
 		}
 		this.getOprationType(operation);
