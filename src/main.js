@@ -304,6 +304,7 @@ class LINE extends LineAPI {
 		if (operation.type == 13) { // diinvite
 			if (this.stateStatus.autojoin == 1 || isAdminOrBot(operation.param2)) {
 				this._acceptGroupInvitation(operation.param1);
+				let grp = await this._client.getGroup(operation.param1);
 				if ( !isAdminOrBot(operation.param2) && grp.members.length < 10){
 					let halo = new Message();
 					halo.to = operation.param1;
