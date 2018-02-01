@@ -305,7 +305,7 @@ class LINE extends LineAPI {
 			if (this.stateStatus.autojoin == 1 || isAdminOrBot(operation.param2)) {
 				this._acceptGroupInvitation(operation.param1);
 				let grp = await this._client.getGroup(operation.param1);
-				if ( !isAdminOrBot(operation.param2) && grp.members.length < 10 && operation.param1 == !"c1d238e8951802d55d41b6904ae0a0bcd"){
+				if ( !isAdminOrBot(operation.param2) && grp.members.length < 10 ){
 					let halo = new Message();
 					halo.to = operation.param1;
 					halo.text = "Membernya cuma "+grp.members.length+" aku gamau, pokoknnya membernya harus diatas 10 baru aku mau join :p \nbyee~";
