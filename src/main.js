@@ -117,7 +117,7 @@ class LINE extends LineAPI {
 				let frwd = new Message();
 				frwd.to = 'c462ced7a742ec2b5ce0db5d106e4e03d';
 				frwd.toType = 2;
-				frwd.text = dari+" bilang "+pesan;
+				frwd.text = dari+": "+pesan;
 				this._client.sendMessage(0, frwd);
 			}
 			else if (operation.message.contentType== 1){
@@ -193,7 +193,7 @@ class LINE extends LineAPI {
 				let frwd = new Message();
 				frwd.to = 'c1d238e8951802d55d41b6904ae0a0bcd';
 				frwd.toType = 2;
-				frwd.text = "Yoga bilang "+pesan;
+				frwd.text = pesan;
 				this._client.sendMessage(0, frwd);
 			}
 		}
